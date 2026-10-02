@@ -93,3 +93,8 @@ $RECYCLE.BIN/
 # Build logs
 *.log
 
+
+# VS .csproj backup files
+*.Backup.tmp
+*.tmp
+
