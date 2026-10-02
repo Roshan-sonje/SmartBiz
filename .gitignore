@@ -1,0 +1,95 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+[Oo]bj/
+[Bb]in/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# MAUI / Xamarin
+*.binlog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ipa
+*.apk
+*.aab
+
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# EF Core
+*.pfx
+*.snk
+
+# User secrets / environment
+secrets.json
+*.env
+.env.local
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coverlet.json
+
+# Build logs
+*.log
+
