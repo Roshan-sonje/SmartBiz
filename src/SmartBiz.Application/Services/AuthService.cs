@@ -29,12 +29,22 @@ public class AuthService : IAuthService
     }
 
     public async Task<AuthResponse> RegisterAsync(
-        RegisterRequest request,
-        string? ipAddress,
-        CancellationToken ct = default)
+    RegisterRequest request,
+    string? ipAddress,
+    CancellationToken ct = default)
     {
         var email = request.Email.Trim().ToLowerInvariant();
 
+        // Global email check — one email = one account
+        var emailExists = await _db.Users
+            .IgnoreQueryFilters()
+            .AnyAsync(u => u.Email == email, ct);
+
+        if (emailExists)
+        {
+            _logger.LogWarning("Registration attempted with existing email: {Email}", email);
+            throw AuthException.EmailAlreadyExists();
+        }
         // 1. Business name must be unique enough to create a tenant
         // (Simplified: allow duplicate business names for now — can add uniqueness later)
 

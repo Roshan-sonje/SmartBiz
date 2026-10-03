@@ -30,8 +30,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Status)
             .HasConversion<int>();
 
-        // Unique: one email per business
-        builder.HasIndex(u => new { u.BusinessId, u.Email }).IsUnique();
+        // Email must be globally unique across ALL businesses
+        builder.HasIndex(u => u.Email).IsUnique();
 
         // Foreign key to Business
         builder.HasOne(u => u.Business)
