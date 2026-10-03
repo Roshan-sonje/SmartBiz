@@ -43,6 +43,11 @@ public class SmartBizDbContext : DbContext
     public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
     public DbSet<StockAdjustment> StockAdjustments => Set<StockAdjustment>();
 
+    // Settings & Audit
+    public DbSet<BusinessSettings> BusinessSettings => Set<BusinessSettings>();
+    public DbSet<PrinterSettings> PrinterSettings => Set<PrinterSettings>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
