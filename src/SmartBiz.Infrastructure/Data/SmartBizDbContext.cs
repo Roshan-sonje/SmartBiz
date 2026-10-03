@@ -29,6 +29,13 @@ public class SmartBizDbContext : DbContext
     public DbSet<Tax> Taxes => Set<Tax>();
     public DbSet<Product> Products => Set<Product>();
 
+    // Transactions
+    public DbSet<Sale> Sales => Set<Sale>();
+    public DbSet<SaleItem> SaleItems => Set<SaleItem>();
+    public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<Purchase> Purchases => Set<Purchase>();
+    public DbSet<PurchaseItem> PurchaseItems => Set<PurchaseItem>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
