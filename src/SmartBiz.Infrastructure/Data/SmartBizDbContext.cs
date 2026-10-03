@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartBiz.Application.Interfaces;
 using SmartBiz.Domain.Common;
 using SmartBiz.Domain.Entities;
+using SmartBiz.Application.Interfaces;
 
 namespace SmartBiz.Infrastructure.Data;
 
-public class SmartBizDbContext : DbContext
+public class SmartBizDbContext : DbContext, IApplicationDbContext
 {
     public SmartBizDbContext(DbContextOptions<SmartBizDbContext> options)
         : base(options)

@@ -6,4 +6,5 @@ public interface ICurrentUser
     Guid? BusinessId { get; }
     string? Email { get; }
     bool IsAuthenticated { get; }
+    IReadOnlyList<string> Roles { get; }
 }
