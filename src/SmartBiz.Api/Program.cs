@@ -1,32 +1,35 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SmartBiz.Api.Authentication;
+using SmartBiz.Api.Filters;
 using SmartBiz.Api.Middleware;
 using SmartBiz.Application;
 using SmartBiz.Application.Common;
 using SmartBiz.Application.Interfaces;
 using SmartBiz.Infrastructure;
-using SmartBiz.Infrastructure.Authentication;
+
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ---- Services ----
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Needed by CurrentUser to read HTTP context
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<ValidationFilter>();
 
-// Application layer
 builder.Services.AddApplication();
-
-// Infrastructure layer (Db, JWT services)
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// ---- JWT authentication ----
+// ---- JWT ----
 var jwtOptions = builder.Configuration
     .GetSection(JwtOptions.SectionName)
     .Get<JwtOptions>()
@@ -35,8 +38,7 @@ var jwtOptions = builder.Configuration
 if (string.IsNullOrWhiteSpace(jwtOptions.SecretKey) || jwtOptions.SecretKey.Length < 32)
 {
     throw new InvalidOperationException(
-        "JWT SecretKey must be configured and at least 32 characters long. " +
-        "Use user secrets in development: 'Jwt:SecretKey'.");
+        "JWT SecretKey must be configured and at least 32 characters long.");
 }
 
 builder.Services
@@ -47,7 +49,7 @@ builder.Services
     })
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false; // dev; enable in production
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {

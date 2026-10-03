@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SmartBiz.Application.Interfaces;
 
-namespace SmartBiz.Infrastructure.Authentication;
+namespace SmartBiz.Api.Authentication;
 
 public class CurrentUser : ICurrentUser
 {
