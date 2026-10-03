@@ -1,16 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using SmartBiz.Application.Interfaces;
 using SmartBiz.Domain.Common;
 using SmartBiz.Domain.Entities;
-
 
 namespace SmartBiz.Infrastructure.Data;
 
 public class SmartBizDbContext : DbContext, IApplicationDbContext
 {
-    public SmartBizDbContext(DbContextOptions<SmartBizDbContext> options)
+    private readonly ITenantProvider _tenantProvider;
+
+    public SmartBizDbContext(
+        DbContextOptions<SmartBizDbContext> options,
+        ITenantProvider tenantProvider)
         : base(options)
     {
+        _tenantProvider = tenantProvider;
     }
 
     // Identity
@@ -55,6 +60,9 @@ public class SmartBizDbContext : DbContext, IApplicationDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SmartBizDbContext).Assembly);
+
+        // Apply global query filters for every IBusinessScoped entity
+        ApplyTenantFilters(modelBuilder);
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -83,6 +91,32 @@ public class SmartBizDbContext : DbContext, IApplicationDbContext
             {
                 entry.Entity.UpdatedAt = DateTime.UtcNow;
             }
+        }
+    }
+
+    private void ApplyTenantFilters(ModelBuilder modelBuilder)
+    {
+        // This value is captured at context creation (per-request scope).
+        // If null (unauthenticated request), the filter becomes "BusinessId == Guid.Empty"
+        // — which matches nothing. That's deliberate: unauth users see zero rows.
+        var businessId = _tenantProvider.BusinessId ?? Guid.Empty;
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (!typeof(IBusinessScoped).IsAssignableFrom(entityType.ClrType))
+                continue;
+
+            // Skip Business itself — it IS the tenant root
+            if (entityType.ClrType == typeof(Business))
+                continue;
+
+            var parameter = Expression.Parameter(entityType.ClrType, "e");
+            var property = Expression.Property(parameter, nameof(IBusinessScoped.BusinessId));
+            var constant = Expression.Constant(businessId);
+            var body = Expression.Equal(property, constant);
+            var lambda = Expression.Lambda(body, parameter);
+
+            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
         }
     }
 }

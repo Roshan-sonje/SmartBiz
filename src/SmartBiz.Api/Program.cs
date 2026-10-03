@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using SmartBiz.Api.Authentication;
 using SmartBiz.Api.Filters;
@@ -7,8 +9,6 @@ using SmartBiz.Application;
 using SmartBiz.Application.Common;
 using SmartBiz.Application.Interfaces;
 using SmartBiz.Infrastructure;
-
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ValidationFilter>();
 
 builder.Services.AddApplication();
@@ -64,7 +65,32 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+// ---- Authorization: require authentication by default ----
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    options.AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
+        policy.RequireRole("Admin"));
+
+    // Placeholder policies — permission checks wired in later phases
+    options.AddPolicy(AuthorizationPolicies.CanManageCustomers, policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy(AuthorizationPolicies.CanManageProducts, policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy(AuthorizationPolicies.CanCreateSales, policy =>
+        policy.RequireAuthenticatedUser());
+
+    options.AddPolicy(AuthorizationPolicies.CanViewReports, policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 var app = builder.Build();
 
