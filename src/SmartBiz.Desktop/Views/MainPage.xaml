@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    BackgroundColor="{StaticResource BackgroundPrimary}"
+    Title="Design System">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24" MaximumWidthRequest="900">
+
+            <controls:SmartPageHeader
+                Title="Design System Preview"
+                Subtitle="Visual test of all SmartBiz reusable controls">
+                <controls:SmartButton Text="Primary Action" Variant="Primary" />
+                <controls:SmartButton Text="Cancel" Variant="Secondary" />
+            </controls:SmartPageHeader>
+
+            <controls:SmartCard>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Buttons" Style="{StaticResource Heading3}" />
+                    <HorizontalStackLayout Spacing="12">
+                        <controls:SmartButton Text="Primary" Variant="Primary" />
+                        <controls:SmartButton Text="Secondary" Variant="Secondary" />
+                        <controls:SmartButton Text="Danger" Variant="Danger" />
+                        <controls:SmartButton Text="Ghost" Variant="Ghost" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <controls:SmartCard>
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Text Inputs" Style="{StaticResource Heading3}" />
+                    <controls:SmartTextBox Label="Customer Name" Placeholder="Enter full name" />
+                    <controls:SmartTextBox Label="Email Address" Placeholder="name@example.com" />
+                    <controls:SmartTextBox Label="Password" Placeholder="Enter password" IsPassword="True" />
+                    <controls:SmartTextBox
+                        Label="Phone"
+                        Placeholder="10-digit number"
+                        Text="abc"
+                        ErrorMessage="Phone must be 10 digits." />
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <controls:SmartCard>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Badges" Style="{StaticResource Heading3}" />
+                    <HorizontalStackLayout Spacing="8">
+                        <controls:SmartBadge Text="PAID" Variant="Success" />
+                        <controls:SmartBadge Text="PENDING" Variant="Warning" />
+                        <controls:SmartBadge Text="OVERDUE" Variant="Danger" />
+                        <controls:SmartBadge Text="INFO" Variant="Info" />
+                        <controls:SmartBadge Text="DRAFT" Variant="Neutral" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <controls:SmartCard>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Loading State" Style="{StaticResource Heading3}" />
+                    <controls:SmartLoadingView Message="Fetching customers..." HeightRequest="120" />
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <controls:SmartCard>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Empty State" Style="{StaticResource Heading3}" />
+                    <controls:SmartEmptyState
+                        Icon="&#x1F4ED;"
+                        Title="No customers yet"
+                        Description="Once you add customers, they'll appear here. Start by adding your first customer.">
+                        <controls:SmartEmptyState.ActionView>
+                            <controls:SmartButton Text="+ Add Customer" Variant="Primary" />
+                        </controls:SmartEmptyState.ActionView>
+                    </controls:SmartEmptyState>
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
