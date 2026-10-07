@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:LoginViewModel"
+    BackgroundColor="{StaticResource BackgroundPrimary}"
+    Shell.NavBarIsVisible="False"
+    Title="Sign In">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="24"
+                Spacing="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                MaximumWidthRequest="420"
+                WidthRequest="420">
+
+                <!-- Logo / brand -->
+                <VerticalStackLayout Spacing="8" Margin="0,0,0,32">
+                    <Label
+                        Text="SmartBiz"
+                        FontSize="36"
+                        FontFamily="OpenSansSemibold"
+                        TextColor="{StaticResource BrandPrimary}"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Business Management &amp; Billing"
+                        FontSize="14"
+                        TextColor="{StaticResource TextSecondary}"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Login card -->
+                <controls:SmartCard Padding="32">
+                    <VerticalStackLayout Spacing="20">
+
+                        <Label
+                            Text="Welcome back"
+                            Style="{StaticResource Heading2}"
+                            HorizontalOptions="Center" />
+
+                        <Label
+                            Text="Sign in to continue to your dashboard"
+                            Style="{StaticResource BodyTextSecondary}"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,8" />
+
+                        <controls:SmartTextBox
+                            Label="Email"
+                            Placeholder="you@example.com"
+                            Text="{Binding Email}"
+                            Keyboard="Email" />
+
+                        <controls:SmartTextBox
+                            Label="Password"
+                            Placeholder="Enter your password"
+                            Text="{Binding Password}"
+                            IsPassword="True" />
+
+                        <!-- Remember me + Forgot -->
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                                <CheckBox
+                                    IsChecked="{Binding RememberMe}"
+                                    Color="{StaticResource BrandPrimary}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Text="Remember me"
+                                    FontSize="13"
+                                    TextColor="{StaticResource TextSecondary}"
+                                    VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+                            <Label
+                                Grid.Column="2"
+                                Text="Forgot password?"
+                                FontSize="13"
+                                TextColor="{StaticResource BrandPrimary}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+
+                        <!-- Error message -->
+                        <Label
+                            Text="{Binding ErrorMessage}"
+                            TextColor="{StaticResource Danger}"
+                            FontSize="13"
+                            IsVisible="{Binding HasError}"
+                            LineBreakMode="WordWrap" />
+
+                        <!-- Sign in button -->
+                        <controls:SmartButton
+                            Text="Sign In"
+                            Variant="Primary"
+                            Command="{Binding SignInCommand}"
+                            HorizontalOptions="Fill"
+                            HeightRequest="44" />
+
+                        <!-- Divider -->
+                        <BoxView
+                            HeightRequest="1"
+                            Color="{StaticResource BorderDefault}"
+                            Margin="0,8" />
+
+                        <!-- Register link -->
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="6">
+                            <Label
+                                Text="Don't have an account?"
+                                FontSize="13"
+                                TextColor="{StaticResource TextSecondary}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Text="Create one"
+                                FontSize="13"
+                                FontFamily="OpenSansSemibold"
+                                TextColor="{StaticResource BrandPrimary}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <!-- Loading overlay -->
+                <Grid IsVisible="{Binding IsBusy}" Margin="0,24,0,0">
+                    <controls:SmartLoadingView Message="Signing in..." HeightRequest="80" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

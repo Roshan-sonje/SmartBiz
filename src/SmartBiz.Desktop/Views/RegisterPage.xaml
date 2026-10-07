@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:RegisterViewModel"
+    BackgroundColor="{StaticResource BackgroundPrimary}"
+    Shell.NavBarIsVisible="False"
+    Title="Create Account">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="0"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            MaximumWidthRequest="480"
+            WidthRequest="480">
+
+            <VerticalStackLayout Spacing="8" Margin="0,0,0,24">
+                <Label
+                    Text="Create your SmartBiz account"
+                    FontSize="28"
+                    FontFamily="OpenSansSemibold"
+                    TextColor="{StaticResource TextPrimary}"
+                    HorizontalOptions="Center" />
+                <Label
+                    Text="Get started in under a minute"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}"
+                    HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Your Details" Style="{StaticResource Heading3}" Margin="0,0,0,4" />
+
+                    <controls:SmartTextBox
+                        Label="Full name"
+                        Placeholder="e.g. Roshan Sonje"
+                        Text="{Binding FullName}" />
+
+                    <controls:SmartTextBox
+                        Label="Email"
+                        Placeholder="you@example.com"
+                        Text="{Binding Email}"
+                        Keyboard="Email" />
+
+                    <controls:SmartTextBox
+                        Label="Phone (optional)"
+                        Placeholder="10-digit number"
+                        Text="{Binding Phone}"
+                        Keyboard="Telephone" />
+
+                    <controls:SmartTextBox
+                        Label="Password"
+                        Placeholder="Min 8 chars, 1 upper, 1 lower, 1 digit"
+                        Text="{Binding Password}"
+                        IsPassword="True" />
+
+                    <controls:SmartTextBox
+                        Label="Confirm password"
+                        Placeholder="Re-enter password"
+                        Text="{Binding ConfirmPassword}"
+                        IsPassword="True" />
+
+                    <BoxView HeightRequest="1" Color="{StaticResource BorderDefault}" Margin="0,8" />
+
+                    <Label Text="Your Business" Style="{StaticResource Heading3}" Margin="0,0,0,4" />
+
+                    <controls:SmartTextBox
+                        Label="Business name"
+                        Placeholder="e.g. Roshan Traders"
+                        Text="{Binding BusinessName}" />
+
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        TextColor="{StaticResource Danger}"
+                        FontSize="13"
+                        IsVisible="{Binding HasError}"
+                        LineBreakMode="WordWrap" />
+
+                    <controls:SmartButton
+                        Text="Create Account"
+                        Variant="Primary"
+                        Command="{Binding CreateAccountCommand}"
+                        HorizontalOptions="Fill"
+                        HeightRequest="44" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <Label
+                            Text="Already have an account?"
+                            FontSize="13"
+                            TextColor="{StaticResource TextSecondary}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Text="Sign in"
+                            FontSize="13"
+                            FontFamily="OpenSansSemibold"
+                            TextColor="{StaticResource BrandPrimary}"
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoBackToLoginCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <Grid IsVisible="{Binding IsBusy}" Margin="0,24,0,0">
+                <controls:SmartLoadingView Message="Creating your account..." HeightRequest="80" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

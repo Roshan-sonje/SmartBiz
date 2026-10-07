@@ -28,6 +28,10 @@ public class SmartTextBox : ContentView
         BindableProperty.Create(nameof(IsPassword), typeof(bool), typeof(SmartTextBox), false,
             propertyChanged: (b, o, n) => ((SmartTextBox)b)._entry.IsPassword = (bool)n);
 
+    public static readonly BindableProperty KeyboardProperty =
+        BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(SmartTextBox), Keyboard.Default,
+            propertyChanged: (b, o, n) => ((SmartTextBox)b)._entry.Keyboard = (Keyboard)n);
+
     public static readonly BindableProperty ErrorMessageProperty =
         BindableProperty.Create(nameof(ErrorMessage), typeof(string), typeof(SmartTextBox), null,
             propertyChanged: OnErrorChanged);
@@ -54,6 +58,12 @@ public class SmartTextBox : ContentView
     {
         get => (bool)GetValue(IsPasswordProperty);
         set => SetValue(IsPasswordProperty, value);
+    }
+
+    public Keyboard Keyboard
+    {
+        get => (Keyboard)GetValue(KeyboardProperty);
+        set => SetValue(KeyboardProperty, value);
     }
 
     public string? ErrorMessage

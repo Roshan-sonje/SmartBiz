@@ -1,16 +1,28 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using SmartBiz.Desktop.Resources.Styles;
 
 namespace SmartBiz.Desktop;
 
 public partial class App : Application
 {
-	public App()
-	{
-		InitializeComponent();
-	}
+    public App()
+    {
+        InitializeComponent();
 
-	protected override Window CreateWindow(IActivationState? activationState)
-	{
-		return new Window(new AppShell());
-	}
+        // Register all design tokens in C# (works around MAUI Windows
+        // MergedDictionaries crash bug)
+        AppColors.Register(Resources);
+
+        MainPage = new ContentPage
+        {
+            BackgroundColor = (Color)Resources["BrandPrimary"],
+            Content = new Label
+            {
+                Text = "Hello from SmartBiz!",
+                FontSize = 32,
+                TextColor = Colors.White,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            }
+        };
+    }
 }
