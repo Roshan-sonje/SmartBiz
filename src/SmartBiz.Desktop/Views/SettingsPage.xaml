@@ -11,13 +11,23 @@
             <Label x:Name="TabProfile"
                    Text="Business Profile"
                    FontSize="14"
-                   FontFamily="OpenSansSemibold"
-                   TextColor="{StaticResource BrandPrimary}"
+                   TextColor="{StaticResource TextSecondary}"
                    Padding="0,8">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="profile" />
                 </Label.GestureRecognizers>
             </Label>
+
+            <Label x:Name="TabUsers"
+                   Text="Users"
+                   FontSize="14"
+                   TextColor="{StaticResource TextSecondary}"
+                   Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="users" />
+                </Label.GestureRecognizers>
+            </Label>
+
             <Label x:Name="TabInvoice"
                    Text="Invoice Settings"
                    FontSize="14"

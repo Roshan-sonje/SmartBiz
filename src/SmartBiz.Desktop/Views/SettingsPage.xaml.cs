@@ -1,4 +1,4 @@
-﻿using SmartBiz.Desktop.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace SmartBiz.Desktop.Views;
 
@@ -27,24 +27,28 @@ public partial class SettingsPage : ContentView
 
     private void ShowTab(string tab)
     {
-        // Update tab styles
-        TabProfile.TextColor = tab == "profile"
-            ? (Color)Application.Current!.Resources["BrandPrimary"]
-            : (Color)Application.Current!.Resources["TextSecondary"];
-        TabProfile.FontFamily = tab == "profile" ? "OpenSansSemibold" : "OpenSansRegular";
+        var primary = (Color)Application.Current!.Resources["BrandPrimary"];
+        var secondary = (Color)Application.Current!.Resources["TextSecondary"];
 
-        TabInvoice.TextColor = tab == "invoice"
-            ? (Color)Application.Current!.Resources["BrandPrimary"]
-            : (Color)Application.Current!.Resources["TextSecondary"];
-        TabInvoice.FontFamily = tab == "invoice" ? "OpenSansSemibold" : "OpenSansRegular";
+        // Reset all tabs
+        SetTabStyle(TabProfile, tab == "profile", primary, secondary);
+        SetTabStyle(TabUsers, tab == "users", primary, secondary);
+        SetTabStyle(TabInvoice, tab == "invoice", primary, secondary);
 
         // Swap content
         SettingsContent.Content = tab switch
         {
             "profile" => _services.GetRequiredService<BusinessProfilePage>(),
+            "users" => _services.GetRequiredService<UsersPage>(),
             "invoice" => BuildPlaceholder("Invoice Settings"),
             _ => BuildPlaceholder(tab)
         };
+    }
+
+    private static void SetTabStyle(Label tab, bool isActive, Color primary, Color secondary)
+    {
+        tab.TextColor = isActive ? primary : secondary;
+        tab.FontFamily = isActive ? "OpenSansSemibold" : "OpenSansRegular";
     }
 
     private static View BuildPlaceholder(string text) => new VerticalStackLayout

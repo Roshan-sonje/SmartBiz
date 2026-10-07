@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.UsersPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:UsersViewModel">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="24" RowSpacing="12">
+
+        <!-- Header card -->
+        <controls:SmartCard Grid.Row="0" Padding="24,20">
+            <Grid ColumnDefinitions="*, Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Team Members" FontSize="18" FontFamily="OpenSansSemibold" />
+                    <Label Text="People with access to this business"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+
+                <controls:SmartButton Grid.Column="1"
+                                      Text="Refresh"
+                                      Variant="Secondary"
+                                      Command="{Binding RefreshCommand}" />
+            </Grid>
+        </controls:SmartCard>
+
+        <!-- Debug / error label -->
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               TextColor="{StaticResource Danger}"
+               FontSize="13" />
+
+        <!-- Users list card -->
+        <controls:SmartCard Grid.Row="2" Padding="0">
+            <Grid RowDefinitions="Auto, *">
+
+                <!-- Column headers -->
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="2*, 2.5*, 1.5*, 1*, 1.5*"
+                      Padding="24,12"
+                      BackgroundColor="{StaticResource BackgroundSecondary}">
+                    <Label Grid.Column="0" Text="NAME" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="1" Text="EMAIL" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="2" Text="ROLE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="3" Text="STATUS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="4" Text="LAST LOGIN" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                </Grid>
+
+                <!-- Users CollectionView -->
+                <CollectionView Grid.Row="1"
+                                ItemsSource="{Binding Users}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:UserRow">
+                            <Grid ColumnDefinitions="2*, 2.5*, 1.5*, 1*, 1.5*"
+                                  Padding="24,14">
+                                <Label Grid.Column="0"
+                                       Text="{Binding FullName}"
+                                       FontSize="14"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding Email}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center"
+                                       LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="2"
+                                       Text="{Binding RolesText}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="3"
+                                       Text="{Binding Status}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Success}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="4"
+                                       Text="{Binding LastLoginText}"
+                                       FontSize="12"
+                                       TextColor="{StaticResource TextTertiary}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Padding="40" Spacing="12">
+                            <Label Text="👥" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="No team members yet"
+                                   FontSize="16"
+                                   FontFamily="OpenSansSemibold"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </controls:SmartCard>
+
+    </Grid>
+
+</ContentView>

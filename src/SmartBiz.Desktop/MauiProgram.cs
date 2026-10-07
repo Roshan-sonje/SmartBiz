@@ -47,6 +47,10 @@ public static class MauiProgram
         builder.Services.AddTransient<BusinessProfilePage>();
         builder.Services.AddTransient<SettingsPage>();
 
+        builder.Services.AddSingleton<IUserService, UserService>();
+        builder.Services.AddTransient<UsersViewModel>();
+        builder.Services.AddTransient<UsersPage>();
+
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
