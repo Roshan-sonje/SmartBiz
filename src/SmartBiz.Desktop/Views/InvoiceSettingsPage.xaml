@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.InvoiceSettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:InvoiceSettingsViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" MaximumWidthRequest="900">
+
+            <!-- Card: Invoice Numbering -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Invoice Numbering" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                        <controls:SmartTextBox Grid.Column="0"
+                            Label="Invoice prefix"
+                            Placeholder="INV"
+                            Text="{Binding InvoicePrefix}" />
+
+                        <controls:SmartTextBox Grid.Column="1"
+                            Label="Number format"
+                            Placeholder="INV-2026-000001"
+                            Text="{Binding InvoiceNumberFormat}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="Include financial year in invoice number"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding IncludeFinancialYearInInvoice}"
+                                OnColor="{StaticResource BrandPrimary}" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Card: Tax and Currency -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Tax and Currency" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                        <controls:SmartTextBox Grid.Column="0"
+                            Label="Currency code"
+                            Placeholder="INR"
+                            Text="{Binding Currency}" />
+
+                        <controls:SmartTextBox Grid.Column="1"
+                            Label="Currency symbol"
+                            Placeholder="Rs"
+                            Text="{Binding CurrencySymbol}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="Enable GST/Tax on invoices"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding IsGstEnabled}"
+                                OnColor="{StaticResource BrandPrimary}" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Card: Invoice Display -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Invoice Display" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="Show business logo on invoices"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding ShowLogoOnInvoice}"
+                                OnColor="{StaticResource BrandPrimary}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="Show tax breakup on invoices"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding ShowTaxBreakupOnInvoice}"
+                                OnColor="{StaticResource BrandPrimary}" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Card: Terms and Footer -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Terms and Footer" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Terms and conditions"
+                               FontSize="12"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextSecondary}" />
+                        <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                Stroke="{StaticResource BorderDefault}"
+                                StrokeThickness="1"
+                                Padding="12"
+                                StrokeShape="RoundRectangle 6"
+                                HeightRequest="100">
+                            <Editor Text="{Binding TermsAndConditions}"
+                                    Placeholder="Payment due within 30 days"
+                                    BackgroundColor="Transparent"
+                                    FontSize="14"
+                                    AutoSize="Disabled" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <controls:SmartTextBox
+                        Label="Invoice footer note"
+                        Placeholder="Thank you for your business"
+                        Text="{Binding InvoiceFooterNote}" />
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Error -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   FontSize="13"
+                   IsVisible="{Binding HasError}" />
+
+            <!-- Save button -->
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                <controls:SmartButton
+                    Text="Save Changes"
+                    Variant="Primary"
+                    Command="{Binding SaveCommand}" />
+            </HorizontalStackLayout>
+
+            <!-- Loading -->
+            <controls:SmartLoadingView Message="Loading settings..."
+                                       HeightRequest="100"
+                                       IsVisible="{Binding IsLoading}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

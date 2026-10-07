@@ -19,7 +19,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // HTTP
         builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
         {
             client.BaseAddress = new Uri(AppConfig.ApiBaseUrl);
@@ -33,23 +32,24 @@ public static class MauiProgram
         builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<IBusinessService, BusinessService>();
+        builder.Services.AddSingleton<IUserService, UserService>();
 
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<ShellViewModel>();
         builder.Services.AddTransient<BusinessProfileViewModel>();
+        builder.Services.AddTransient<UsersViewModel>();
+        builder.Services.AddTransient<InvoiceSettingsViewModel>();
 
         // Views
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ShellPage>();
         builder.Services.AddTransient<BusinessProfilePage>();
-        builder.Services.AddTransient<SettingsPage>();
-
-        builder.Services.AddSingleton<IUserService, UserService>();
-        builder.Services.AddTransient<UsersViewModel>();
         builder.Services.AddTransient<UsersPage>();
+        builder.Services.AddTransient<InvoiceSettingsPage>();
+        builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

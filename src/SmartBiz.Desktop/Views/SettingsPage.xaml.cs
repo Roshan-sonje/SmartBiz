@@ -40,7 +40,7 @@ public partial class SettingsPage : ContentView
         {
             "profile" => _services.GetRequiredService<BusinessProfilePage>(),
             "users" => _services.GetRequiredService<UsersPage>(),
-            "invoice" => BuildPlaceholder("Invoice Settings"),
+            "invoice" => _services.GetRequiredService<InvoiceSettingsPage>(),
             _ => BuildPlaceholder(tab)
         };
     }
