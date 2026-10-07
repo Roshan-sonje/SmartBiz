@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.CustomerFormDialog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    BackgroundColor="#80000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <controls:SmartCard Padding="32"
+                            WidthRequest="600"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            MaximumHeightRequest="800">
+
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="16">
+
+                <!-- Header -->
+                <Label x:Name="DialogTitle"
+                       Grid.Row="0"
+                       Text="Add Customer"
+                       FontSize="22"
+                       FontFamily="OpenSansSemibold" />
+
+                <!-- Form -->
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Spacing="16">
+
+                        <controls:SmartTextBox x:Name="NameField"
+                            Label="Name *"
+                            Placeholder="Customer name" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="PhoneField"
+                                Grid.Column="0"
+                                Label="Phone"
+                                Placeholder="9876543210" />
+
+                            <controls:SmartTextBox x:Name="EmailField"
+                                Grid.Column="1"
+                                Label="Email"
+                                Placeholder="customer@example.com" />
+                        </Grid>
+
+                        <controls:SmartTextBox x:Name="AddressField"
+                            Label="Address"
+                            Placeholder="Street address" />
+
+                        <Grid ColumnDefinitions="*, *, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="CityField"
+                                Grid.Column="0"
+                                Label="City"
+                                Placeholder="Mumbai" />
+
+                            <controls:SmartTextBox x:Name="StateField"
+                                Grid.Column="1"
+                                Label="State"
+                                Placeholder="Maharashtra" />
+
+                            <controls:SmartTextBox x:Name="PostalField"
+                                Grid.Column="2"
+                                Label="Postal code"
+                                Placeholder="400001" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="GstinField"
+                                Grid.Column="0"
+                                Label="GSTIN"
+                                Placeholder="27ABCDE1234F1Z5" />
+
+                            <controls:SmartTextBox x:Name="BalanceField"
+                                Grid.Column="1"
+                                Label="Opening balance"
+                                Placeholder="0.00" />
+                        </Grid>
+
+                        <controls:SmartTextBox x:Name="CreditLimitField"
+                            Label="Credit limit"
+                            Placeholder="50000" />
+
+                        <Label x:Name="ErrorLabel"
+                               TextColor="{StaticResource Danger}"
+                               FontSize="13"
+                               IsVisible="False" />
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Actions -->
+                <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+                    <controls:SmartButton
+                        Text="Cancel"
+                        Variant="Secondary"
+                        Clicked="OnCancelClicked" />
+                    <controls:SmartButton
+                        x:Name="SaveButton"
+                        Text="Save"
+                        Variant="Primary"
+                        Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+
+</ContentPage>

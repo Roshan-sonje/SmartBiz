@@ -36,6 +36,7 @@ public partial class ShellPage : ContentPage
             View content = route switch
             {
                 NavRoutes.Dashboard => new DashboardPage(),
+                NavRoutes.Customers => ResolvePage<CustomersPage>(),
                 NavRoutes.Settings => ResolvePage<SettingsPage>(),
                 _ => BuildPlaceholder(route)
             };

@@ -51,6 +51,11 @@ public static class MauiProgram
         builder.Services.AddTransient<InvoiceSettingsPage>();
         builder.Services.AddTransient<SettingsPage>();
 
+        builder.Services.AddSingleton<ICustomerService, CustomerService>();
+        builder.Services.AddTransient<CustomersViewModel>();
+        builder.Services.AddTransient<CustomersPage>();
+        builder.Services.AddTransient<CustomerFormDialog>();
+
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
