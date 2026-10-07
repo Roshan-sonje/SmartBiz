@@ -15,4 +15,5 @@ public static class NavRoutes
     public const string Expenses = "expenses";
     public const string Reports = "reports";
     public const string Settings = "settings";
+    public const string Suppliers = "suppliers";
 }

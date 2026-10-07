@@ -56,6 +56,11 @@ public static class MauiProgram
         builder.Services.AddTransient<CustomersPage>();
         builder.Services.AddTransient<CustomerFormDialog>();
 
+        builder.Services.AddSingleton<ISupplierService, SupplierService>();
+        builder.Services.AddTransient<SuppliersViewModel>();
+        builder.Services.AddTransient<SuppliersPage>();
+        builder.Services.AddTransient<SupplierFormDialog>();
+
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);

@@ -67,6 +67,7 @@ public partial class ShellViewModel : BaseViewModel
             NavRoutes.Expenses => ("Expenses", "Log business expenses"),
             NavRoutes.Reports => ("Reports", "Business insights and analytics"),
             NavRoutes.Settings => ("Settings", "Configure your business"),
+            NavRoutes.Suppliers => ("Suppliers", "Manage your supplier list"),
             _ => ("SmartBiz", string.Empty)
         };
     }

@@ -23,6 +23,7 @@
                 <VerticalStackLayout Padding="12,0,12,12" Spacing="2">
 
                     <controls:SidebarNavItem x:Name="NavDashboard" Icon="📊" Text="Dashboard"  Route="dashboard"  NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem Icon="🏭" Text="Suppliers"  Route="suppliers"  NavigateRequested="OnNavRequested" />
                     <controls:SidebarNavItem x:Name="NavCustomers" Icon="👥" Text="Customers"  Route="customers"  NavigateRequested="OnNavRequested" />
                     <controls:SidebarNavItem x:Name="NavProducts"  Icon="📦" Text="Products"   Route="products"   NavigateRequested="OnNavRequested" />
                     <controls:SidebarNavItem x:Name="NavSales"     Icon="💰" Text="Sales"      Route="sales"      NavigateRequested="OnNavRequested" />
@@ -34,6 +35,10 @@
 
                 </VerticalStackLayout>
             </ScrollView>
+
+            <controls:SidebarNavItem Icon="👥" Text="Customers"  Route="customers"  NavigateRequested="OnNavRequested" />
+            <controls:SidebarNavItem Icon="🏭" Text="Suppliers"  Route="suppliers"  NavigateRequested="OnNavRequested" />
+            <controls:SidebarNavItem Icon="📦" Text="Products"   Route="products"   NavigateRequested="OnNavRequested" />
 
             <!-- USER AREA + LOGOUT -->
             <Border Grid.Row="2" BackgroundColor="#111827" StrokeThickness="0" Padding="16,12">
