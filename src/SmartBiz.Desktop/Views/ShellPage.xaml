@@ -3,15 +3,94 @@
     x:Class="SmartBiz.Desktop.Views.ShellPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
     xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
     x:DataType="vm:ShellViewModel"
-    Shell.NavBarIsVisible="False">
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="{StaticResource BackgroundPrimary}">
 
-    <Label
-        Text="SHELL LOADED"
-        FontSize="32"
-        TextColor="Red"
-        HorizontalOptions="Center"
-        VerticalOptions="Center" />
+    <Grid ColumnDefinitions="240, *">
+
+        <!-- SIDEBAR -->
+        <Grid Grid.Column="0" BackgroundColor="{StaticResource SidebarBackground}" RowDefinitions="Auto, *, Auto">
+
+            <VerticalStackLayout Grid.Row="0" Padding="20,24,20,20">
+                <Label Text="SmartBiz" FontSize="24" FontFamily="OpenSansSemibold" TextColor="White" />
+                <Label Text="Business Management" FontSize="11" TextColor="{StaticResource SidebarTextMuted}" />
+            </VerticalStackLayout>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="12,0,12,12" Spacing="2">
+
+                    <controls:SidebarNavItem x:Name="NavDashboard" Icon="📊" Text="Dashboard"  Route="dashboard"  NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavCustomers" Icon="👥" Text="Customers"  Route="customers"  NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavProducts"  Icon="📦" Text="Products"   Route="products"   NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavSales"     Icon="💰" Text="Sales"      Route="sales"      NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavPurchases" Icon="🛒" Text="Purchases"  Route="purchases"  NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavPayments"  Icon="💳" Text="Payments"   Route="payments"   NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavExpenses"  Icon="💸" Text="Expenses"   Route="expenses"   NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavReports"   Icon="📈" Text="Reports"    Route="reports"    NavigateRequested="OnNavRequested" />
+                    <controls:SidebarNavItem x:Name="NavSettings"  Icon="⚙️" Text="Settings"   Route="settings"   NavigateRequested="OnNavRequested" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- USER AREA + LOGOUT -->
+            <Border Grid.Row="2" BackgroundColor="#111827" StrokeThickness="0" Padding="16,12">
+                <Grid ColumnDefinitions="40, *, Auto">
+
+                    <Border Grid.Column="0"
+                BackgroundColor="{StaticResource BrandAccent}"
+                StrokeThickness="0"
+                WidthRequest="36"
+                HeightRequest="36"
+                StrokeShape="RoundRectangle 18">
+                        <Label Text="{Binding UserInitials}"
+                   TextColor="White"
+                   FontSize="14"
+                   FontFamily="OpenSansSemibold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="10,0,0,0">
+                        <Label Text="{Binding UserFullName}"
+                   TextColor="White"
+                   FontSize="13"
+                   FontFamily="OpenSansSemibold"
+                   LineBreakMode="TailTruncation" />
+                        <Label Text="{Binding BusinessName}"
+                   TextColor="{StaticResource SidebarTextMuted}"
+                   FontSize="11"
+                   LineBreakMode="TailTruncation" />
+                    </VerticalStackLayout>
+
+                    <Button Grid.Column="2"
+                Text="⎋"
+                FontSize="18"
+                TextColor="{StaticResource SidebarTextMuted}"
+                BackgroundColor="Transparent"
+                Padding="6"
+                VerticalOptions="Center"
+                Command="{Binding LogoutCommand}" />
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <!-- MAIN CONTENT -->
+        <Grid Grid.Column="1" RowDefinitions="64, *">
+            <Grid Grid.Row="0" BackgroundColor="{StaticResource HeaderBackground}" Padding="24,0">
+                <VerticalStackLayout VerticalOptions="Center" Spacing="0">
+                    <Label Text="{Binding PageTitle}" FontSize="18" FontFamily="OpenSansSemibold" />
+                    <Label Text="{Binding PageSubtitle}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+            </Grid>
+            <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource HeaderBorder}" VerticalOptions="End" />
+
+            <ContentView x:Name="ContentHost" Grid.Row="1" />
+        </Grid>
+
+    </Grid>
 
 </ContentPage>
