@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid RowDefinitions="Auto, *" Padding="0">
+
+        <!-- Tab bar -->
+        <HorizontalStackLayout Grid.Row="0" Padding="24,16" Spacing="20" BackgroundColor="White">
+            <Label x:Name="TabProfile"
+                   Text="Business Profile"
+                   FontSize="14"
+                   FontFamily="OpenSansSemibold"
+                   TextColor="{StaticResource BrandPrimary}"
+                   Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="profile" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="TabInvoice"
+                   Text="Invoice Settings"
+                   FontSize="14"
+                   TextColor="{StaticResource TextSecondary}"
+                   Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="invoice" />
+                </Label.GestureRecognizers>
+            </Label>
+        </HorizontalStackLayout>
+
+        <!-- Separator -->
+        <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource BorderDefault}" VerticalOptions="End" />
+
+        <!-- Content -->
+        <ContentView x:Name="SettingsContent" Grid.Row="1" />
+
+    </Grid>
+
+</ContentView>

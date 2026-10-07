@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.BusinessProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:BusinessProfileViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" MaximumWidthRequest="900">
+
+            <!-- Card: Basic info -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Business Information" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="16" RowDefinitions="Auto, Auto, Auto" RowSpacing="16">
+
+                        <controls:SmartTextBox Grid.Row="0" Grid.Column="0"
+                            Label="Business name *" Placeholder="Enter business name"
+                            Text="{Binding Name}" />
+
+                        <controls:SmartTextBox Grid.Row="0" Grid.Column="1"
+                            Label="Legal name" Placeholder="Registered legal name"
+                            Text="{Binding LegalName}" />
+
+                        <controls:SmartTextBox Grid.Row="1" Grid.Column="0"
+                            Label="GSTIN" Placeholder="27ABCDE1234F1Z5"
+                            Text="{Binding Gstin}" />
+
+                        <controls:SmartTextBox Grid.Row="1" Grid.Column="1"
+                            Label="Phone" Placeholder="+91 98765 43210"
+                            Text="{Binding Phone}" />
+
+                        <controls:SmartTextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                            Label="Email" Placeholder="billing@example.com"
+                            Text="{Binding Email}" />
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Card: Address -->
+            <controls:SmartCard Padding="32">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Address" FontSize="18" FontFamily="OpenSansSemibold" />
+
+                    <controls:SmartTextBox
+                        Label="Street address"
+                        Placeholder="123 Business Street"
+                        Text="{Binding Address}" />
+
+                    <Grid ColumnDefinitions="*, *, *" ColumnSpacing="16">
+
+                        <controls:SmartTextBox Grid.Column="0"
+                            Label="City" Placeholder="Mumbai"
+                            Text="{Binding City}" />
+
+                        <controls:SmartTextBox Grid.Column="1"
+                            Label="State" Placeholder="Maharashtra"
+                            Text="{Binding State}" />
+
+                        <controls:SmartTextBox Grid.Column="2"
+                            Label="Postal code" Placeholder="400001"
+                            Text="{Binding PostalCode}" />
+
+                    </Grid>
+
+                    <controls:SmartTextBox
+                        Label="Country" Placeholder="India"
+                        Text="{Binding Country}" />
+
+                </VerticalStackLayout>
+            </controls:SmartCard>
+
+            <!-- Error message -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   FontSize="13"
+                   IsVisible="{Binding HasError}" />
+
+            <!-- Actions -->
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                <controls:SmartButton
+        Text="Save Changes"
+        Variant="Primary"
+        Command="{Binding SaveCommand}" />
+            </HorizontalStackLayout>
+
+            <!-- Loading / Saving overlay -->
+            <controls:SmartLoadingView Message="Loading business profile..."
+                                       HeightRequest="100"
+                                       IsVisible="{Binding IsLoading}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>
