@@ -9,12 +9,4 @@ public class PagedResult<T>
     public int TotalPages => PageSize > 0
         ? (int)Math.Ceiling(TotalCount / (double)PageSize)
         : 0;
-
-    public static PagedResult<T> Empty(int page, int pageSize) => new()
-    {
-        Items = Array.Empty<T>(),
-        Page = page,
-        PageSize = pageSize,
-        TotalCount = 0
-    };
 }
