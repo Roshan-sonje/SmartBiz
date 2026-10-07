@@ -63,7 +63,7 @@ public partial class LoginViewModel : BaseViewModel
             _logger.LogInformation("Logged in as {Email}", result.Email);
 
             // Navigate to main shell
-            await _navigation.NavigateToAsync("//main");
+            await _navigation.NavigateToAsync("dashboard");
         }
         catch (ApiException ex)
         {

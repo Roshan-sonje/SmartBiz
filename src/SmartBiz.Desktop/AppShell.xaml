@@ -6,16 +6,9 @@
     xmlns:views="clr-namespace:SmartBiz.Desktop.Views"
     Shell.FlyoutBehavior="Disabled">
 
-    <!-- Login is the first page users see -->
     <ShellContent
         Title="Sign In"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login" />
-
-    <!-- Main app route -->
-    <ShellContent
-        Title="Dashboard"
-        ContentTemplate="{DataTemplate views:DashboardPage}"
-        Route="main" />
 
 </Shell>

@@ -8,7 +8,8 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
-        // Register non-Shell routes (for navigation without ShellContent)
+        // Register explicit routes for navigation
         Routing.RegisterRoute("register", typeof(RegisterPage));
+        Routing.RegisterRoute("dashboard", typeof(DashboardPage));
     }
 }

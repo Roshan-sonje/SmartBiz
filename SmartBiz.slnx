@@ -11,7 +11,8 @@
       <Platform Solution="*|x64" Project="x64" />
     </Project>
     <Project Path="src/SmartBiz.Desktop/SmartBiz.Desktop.csproj">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="Release|x64" Project="x64" />
+      <Deploy Solution="Debug|x64" />
     </Project>
     <Project Path="src/SmartBiz.Domain/SmartBiz.Domain.csproj">
       <Platform Solution="*|x64" Project="x64" />
