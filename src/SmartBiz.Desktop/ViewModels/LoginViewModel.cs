@@ -9,8 +9,6 @@ namespace SmartBiz.Desktop.ViewModels;
 public partial class LoginViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
-    private readonly INavigationService _navigation;
-    private readonly IDialogService _dialog;
     private readonly ILogger<LoginViewModel> _logger;
 
     [ObservableProperty]
@@ -24,19 +22,11 @@ public partial class LoginViewModel : BaseViewModel
 
     public LoginViewModel(
         IAuthService authService,
-        INavigationService navigation,
-        IDialogService dialog,
         ILogger<LoginViewModel> logger)
     {
         _authService = authService;
-        _navigation = navigation;
-        _dialog = dialog;
         _logger = logger;
-
-        Title = "Sign In";
     }
-
-    public string Title { get; }
 
     [RelayCommand]
     private async Task SignInAsync()
@@ -59,11 +49,22 @@ public partial class LoginViewModel : BaseViewModel
         try
         {
             var result = await _authService.LoginAsync(Email.Trim(), Password);
-
             _logger.LogInformation("Logged in as {Email}", result.Email);
 
-            // Navigate to main shell
-            await _navigation.NavigateToAsync("dashboard");
+            // Navigate to ShellPage (direct page swap — no Shell routing)
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var shellPage = Application.Current?.Handler?.MauiContext?.Services
+                    .GetService<Views.ShellPage>();
+
+                if (shellPage is null)
+                {
+                    ErrorMessage = "Unable to create application shell.";
+                    return;
+                }
+
+                Application.Current!.MainPage = shellPage;
+            });
         }
         catch (ApiException ex)
         {
@@ -73,7 +74,7 @@ public partial class LoginViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected login error");
-            ErrorMessage = "Something went wrong. Please try again.";
+            ErrorMessage = $"DEBUG: {ex.GetType().Name}: {ex.Message}";
         }
         finally
         {
@@ -82,17 +83,23 @@ public partial class LoginViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task ForgotPasswordAsync()
-    {
-        await _dialog.ShowAlertAsync("Forgot password",
-            "Password reset will be available in a future update. Contact support for now.");
-    }
-
-
-
-    [RelayCommand]
     private async Task GoToRegisterAsync()
     {
-        await _navigation.NavigateToAsync("register");
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            var registerPage = Application.Current?.Handler?.MauiContext?.Services
+                .GetService<Views.RegisterPage>();
+
+            if (registerPage is not null)
+                Application.Current!.MainPage = registerPage;
+        });
+
+        await Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private async Task ForgotPasswordAsync()
+    {
+        await Task.CompletedTask;
     }
 }

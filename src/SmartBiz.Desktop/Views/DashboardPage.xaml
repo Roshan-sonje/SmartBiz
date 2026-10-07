@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+<ContentView
     x:Class="SmartBiz.Desktop.Views.DashboardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
-    BackgroundColor="{StaticResource BackgroundPrimary}"
-    Title="Dashboard">
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls">
 
-    <VerticalStackLayout Padding="24" Spacing="24">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24">
 
-        <controls:SmartPageHeader
-            Title="Dashboard"
-            Subtitle="Welcome to SmartBiz" />
+            <controls:SmartCard Padding="40">
+                <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                    <Label Text="🎉" FontSize="48" HorizontalOptions="Center" />
+                    <Label
+                        Text="You're signed in!"
+                        FontSize="22"
+                        FontFamily="OpenSansSemibold"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="The dashboard will show sales, purchases, and metrics here."
+                        FontSize="14"
+                        TextColor="{StaticResource TextSecondary}"
+                        HorizontalTextAlignment="Center"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </controls:SmartCard>
 
-        <controls:SmartCard Padding="40">
-            <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
-                <Label Text="🎉" FontSize="48" HorizontalOptions="Center" />
-                <Label
-                    Text="You're signed in!"
-                    FontSize="22"
-                    FontFamily="OpenSansSemibold"
-                    HorizontalOptions="Center" />
-                <Label
-                    Text="The dashboard will show sales, purchases, and metrics here."
-                    FontSize="14"
-                    TextColor="{StaticResource TextSecondary}"
-                    HorizontalTextAlignment="Center"
-                    HorizontalOptions="Center" />
-            </VerticalStackLayout>
-        </controls:SmartCard>
+        </VerticalStackLayout>
+    </ScrollView>
 
-    </VerticalStackLayout>
-
-</ContentPage>
+</ContentView>

@@ -57,7 +57,7 @@ public partial class RegisterViewModel : BaseViewModel
             var result = await _authService.RegisterAsync(request);
             _logger.LogInformation("Registered user {Email} for business {Business}", result.Email, result.BusinessName);
 
-            await _navigation.NavigateToAsync("dashboard");
+            await _navigation.NavigateToAsync("//shell");
         }
         catch (ApiException ex)
         {
