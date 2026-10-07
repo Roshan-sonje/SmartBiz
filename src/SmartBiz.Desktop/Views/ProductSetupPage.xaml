@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.ProductSetupPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid RowDefinitions="Auto, *">
+        <HorizontalStackLayout Grid.Row="0" Padding="24,16" Spacing="20" BackgroundColor="White">
+            <Label x:Name="TabCategories" Text="Categories" FontSize="14" TextColor="{StaticResource TextSecondary}" Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="categories" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="TabBrands" Text="Brands" FontSize="14" TextColor="{StaticResource TextSecondary}" Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="brands" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="TabUnits" Text="Units" FontSize="14" TextColor="{StaticResource TextSecondary}" Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="units" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="TabTaxes" Text="Taxes" FontSize="14" TextColor="{StaticResource TextSecondary}" Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="taxes" />
+                </Label.GestureRecognizers>
+            </Label>
+        </HorizontalStackLayout>
+
+        <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource BorderDefault}" VerticalOptions="End" />
+
+        <ContentView x:Name="SetupContent" Grid.Row="1" />
+    </Grid>
+
+</ContentView>

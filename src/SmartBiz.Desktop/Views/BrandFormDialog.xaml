@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.BrandFormDialog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    BackgroundColor="#80000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <controls:SmartCard Padding="32" WidthRequest="500" HorizontalOptions="Center" VerticalOptions="Center">
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="16">
+                <Label Text="Add Brand" FontSize="22" FontFamily="OpenSansSemibold" />
+
+                <VerticalStackLayout Grid.Row="1" Spacing="16">
+                    <controls:SmartTextBox x:Name="NameField" Label="Name *" Placeholder="Samsung" />
+                    <controls:SmartTextBox x:Name="DescriptionField" Label="Description" Placeholder="Short description" />
+                    <Label x:Name="ErrorLabel" TextColor="{StaticResource Danger}" FontSize="13" IsVisible="False" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                    <controls:SmartButton x:Name="SaveButton" Text="Save" Variant="Primary" Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+</ContentPage>

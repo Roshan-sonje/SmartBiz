@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Views.BrandsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+    x:DataType="vm:BrandsViewModel">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="24" RowSpacing="12">
+        <controls:SmartCard Grid.Row="0" Padding="24,20">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="16">
+                <Border Grid.Column="0"
+                        BackgroundColor="{StaticResource SurfacePrimary}"
+                        Stroke="{StaticResource BorderDefault}"
+                        StrokeThickness="1"
+                        Padding="12,0"
+                        HeightRequest="40"
+                        StrokeShape="RoundRectangle 6">
+                    <Entry Placeholder="Search brands..."
+                           Text="{Binding SearchText}"
+                           ReturnCommand="{Binding SearchCommand}"
+                           BackgroundColor="Transparent"
+                           FontSize="14" />
+                </Border>
+                <controls:SmartButton Grid.Column="1"
+                                      Text="+ Add Brand"
+                                      Variant="Primary"
+                                      Clicked="OnAddClicked" />
+            </Grid>
+        </controls:SmartCard>
+
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" TextColor="{StaticResource Danger}" FontSize="13" IsVisible="{Binding HasError}" />
+
+        <controls:SmartCard Grid.Row="2" Padding="0">
+            <Grid RowDefinitions="Auto, *">
+                <Grid Grid.Row="0" ColumnDefinitions="2*, 4*, Auto" Padding="24,12" BackgroundColor="{StaticResource BackgroundSecondary}">
+                    <Label Grid.Column="0" Text="NAME" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="1" Text="DESCRIPTION" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="2" Text="" />
+                </Grid>
+
+                <CollectionView Grid.Row="1" ItemsSource="{Binding Brands}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:BrandRow">
+                            <Grid ColumnDefinitions="2*, 4*, Auto" Padding="24,14">
+                                <Label Grid.Column="0" Text="{Binding Name}" FontSize="14" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Description}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                <Button Grid.Column="2" Text="🗑" FontSize="14" BackgroundColor="Transparent" Padding="8"
+                                        Clicked="OnDeleteClicked" CommandParameter="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Padding="40" Spacing="12">
+                            <Label Text="🏷" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="No brands yet" FontSize="16" FontFamily="OpenSansSemibold" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+</ContentView>

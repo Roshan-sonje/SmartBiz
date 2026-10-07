@@ -28,6 +28,12 @@
                 </Label.GestureRecognizers>
             </Label>
 
+            <Label x:Name="TabProductSetup" Text="Product Setup" FontSize="14" TextColor="{StaticResource TextSecondary}" Padding="0,8">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabClicked" CommandParameter="product-setup" />
+                </Label.GestureRecognizers>
+            </Label>
+
             <Label x:Name="TabInvoice"
                    Text="Invoice Settings"
                    FontSize="14"

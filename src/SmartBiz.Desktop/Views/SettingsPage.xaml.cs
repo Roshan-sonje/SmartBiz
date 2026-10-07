@@ -30,16 +30,16 @@ public partial class SettingsPage : ContentView
         var primary = (Color)Application.Current!.Resources["BrandPrimary"];
         var secondary = (Color)Application.Current!.Resources["TextSecondary"];
 
-        // Reset all tabs
         SetTabStyle(TabProfile, tab == "profile", primary, secondary);
         SetTabStyle(TabUsers, tab == "users", primary, secondary);
+        SetTabStyle(TabProductSetup, tab == "product-setup", primary, secondary);
         SetTabStyle(TabInvoice, tab == "invoice", primary, secondary);
 
-        // Swap content
         SettingsContent.Content = tab switch
         {
             "profile" => _services.GetRequiredService<BusinessProfilePage>(),
             "users" => _services.GetRequiredService<UsersPage>(),
+            "product-setup" => _services.GetRequiredService<ProductSetupPage>(),
             "invoice" => _services.GetRequiredService<InvoiceSettingsPage>(),
             _ => BuildPlaceholder(tab)
         };

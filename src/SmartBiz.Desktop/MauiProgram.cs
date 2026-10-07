@@ -61,6 +61,19 @@ public static class MauiProgram
         builder.Services.AddTransient<SuppliersPage>();
         builder.Services.AddTransient<SupplierFormDialog>();
 
+
+        builder.Services.AddSingleton<ICategoryService, CategoryService>();
+        builder.Services.AddSingleton<IBrandService, BrandService>();
+
+        builder.Services.AddTransient<CategoriesViewModel>();
+        builder.Services.AddTransient<BrandsViewModel>();
+
+        builder.Services.AddTransient<CategoriesPage>();
+        builder.Services.AddTransient<BrandsPage>();
+        builder.Services.AddTransient<CategoryFormDialog>();
+        builder.Services.AddTransient<BrandFormDialog>();
+        builder.Services.AddTransient<ProductSetupPage>();
+
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
