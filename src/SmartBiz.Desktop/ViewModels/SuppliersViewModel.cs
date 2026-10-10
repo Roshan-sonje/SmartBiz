@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Services;
+using System.Collections.ObjectModel;
+using Windows.Services.Maps;
 
 namespace SmartBiz.Desktop.ViewModels;
 

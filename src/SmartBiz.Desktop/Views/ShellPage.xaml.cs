@@ -52,7 +52,6 @@ public partial class ShellPage : ContentPage
             System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             System.Diagnostics.Debug.WriteLine("============================");
 
-            // Show error in content area instead of crashing
             ContentHost.Content = new VerticalStackLayout
             {
                 Padding = new Thickness(40),
@@ -60,7 +59,7 @@ public partial class ShellPage : ContentPage
                 VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
-                    new Label { Text = "⚠️ Navigation error", FontSize = 24, TextColor = Colors.Red, HorizontalOptions = LayoutOptions.Center },
+                    new Label { Text = "⚠ Navigation error", FontSize = 24, TextColor = Colors.Red, HorizontalOptions = LayoutOptions.Center },
                     new Label { Text = $"{ex.GetType().Name}: {ex.Message}", FontSize = 14, TextColor = Color.FromArgb("#6B7280"), HorizontalOptions = LayoutOptions.Center },
                     new Label { Text = route, FontSize = 12, TextColor = Color.FromArgb("#9CA3AF"), HorizontalOptions = LayoutOptions.Center }
                 }

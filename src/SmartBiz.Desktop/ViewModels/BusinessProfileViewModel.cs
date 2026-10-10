@@ -4,6 +4,10 @@ using Microsoft.Extensions.Logging;
 using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Models.Business;
 using SmartBiz.Desktop.Services;
+using System.Diagnostics.Metrics;
+using System.Net;
+using System.Xml.Linq;
+using static Microsoft.Maui.ApplicationModel.Permissions;
 
 namespace SmartBiz.Desktop.ViewModels;
 
