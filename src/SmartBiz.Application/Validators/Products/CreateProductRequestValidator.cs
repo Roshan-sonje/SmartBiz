@@ -1,0 +1,29 @@
+﻿using FluentValidation;
+using SmartBiz.Application.DTOs.Products;
+
+namespace SmartBiz.Application.Validators.Products;
+
+public class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
+{
+    public CreateProductRequestValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Product name is required.")
+            .MaximumLength(250);
+
+        RuleFor(x => x.Sku)
+            .NotEmpty().WithMessage("SKU is required.")
+            .MaximumLength(50);
+
+        RuleFor(x => x.Barcode).MaximumLength(50);
+        RuleFor(x => x.Description).MaximumLength(2000);
+
+        RuleFor(x => x.UnitId)
+            .NotEmpty().WithMessage("Unit is required.");
+
+        RuleFor(x => x.PurchasePrice).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.SellingPrice).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.StockQuantity).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.MinStockLevel).GreaterThanOrEqualTo(0);
+    }
+}

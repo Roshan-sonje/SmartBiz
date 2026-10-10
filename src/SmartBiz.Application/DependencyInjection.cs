@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IBrandService, BrandService>();
         services.AddScoped<IUnitService, UnitService>();
         services.AddScoped<ITaxService, TaxService>();
+        services.AddScoped<IProductService, ProductService>();
 
         return services;
     }
