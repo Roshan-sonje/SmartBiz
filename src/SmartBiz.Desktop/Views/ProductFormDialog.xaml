@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.ProductFormDialog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    BackgroundColor="#80000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <controls:SmartCard Padding="32"
+                            WidthRequest="700"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            MaximumHeightRequest="850">
+
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="16">
+
+                <Label x:Name="DialogTitle" Grid.Row="0" Text="Add Product"
+                       FontSize="22" FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Spacing="16">
+
+                        <controls:SmartTextBox x:Name="NameField"
+                            Label="Product name *"
+                            Placeholder="e.g. Samsung Galaxy A54" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="SkuField" Grid.Column="0"
+                                Label="SKU *" Placeholder="SGA-54" />
+                            <controls:SmartTextBox x:Name="BarcodeField" Grid.Column="1"
+                                Label="Barcode" Placeholder="8901234567890" />
+                        </Grid>
+
+                        <controls:SmartTextBox x:Name="DescriptionField"
+                            Label="Description" Placeholder="Product description" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label Text="Category" FontSize="12" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                        Stroke="{StaticResource BorderDefault}" StrokeThickness="1"
+                                        Padding="12,0" HeightRequest="40"
+                                        StrokeShape="RoundRectangle 6">
+                                    <Picker x:Name="CategoryPicker" Title="Select category"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            BackgroundColor="Transparent" FontSize="14" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label Text="Brand" FontSize="12" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                        Stroke="{StaticResource BorderDefault}" StrokeThickness="1"
+                                        Padding="12,0" HeightRequest="40"
+                                        StrokeShape="RoundRectangle 6">
+                                    <Picker x:Name="BrandPicker" Title="Select brand"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            BackgroundColor="Transparent" FontSize="14" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label Text="Unit *" FontSize="12" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                        Stroke="{StaticResource BorderDefault}" StrokeThickness="1"
+                                        Padding="12,0" HeightRequest="40"
+                                        StrokeShape="RoundRectangle 6">
+                                    <Picker x:Name="UnitPicker" Title="Select unit"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            BackgroundColor="Transparent" FontSize="14" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label Text="Tax" FontSize="12" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                        Stroke="{StaticResource BorderDefault}" StrokeThickness="1"
+                                        Padding="12,0" HeightRequest="40"
+                                        StrokeShape="RoundRectangle 6">
+                                    <Picker x:Name="TaxPicker" Title="Select tax"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            BackgroundColor="Transparent" FontSize="14" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="PurchasePriceField" Grid.Column="0"
+                                Label="Purchase price" Placeholder="0.00" />
+                            <controls:SmartTextBox x:Name="SellingPriceField" Grid.Column="1"
+                                Label="Selling price" Placeholder="0.00" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="16">
+                            <controls:SmartTextBox x:Name="StockQuantityField" Grid.Column="0"
+                                Label="Stock quantity" Placeholder="0" />
+                            <controls:SmartTextBox x:Name="MinStockField" Grid.Column="1"
+                                Label="Min stock level" Placeholder="0" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0" Text="Track inventory" FontSize="14"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Switch x:Name="TrackInventorySwitch" Grid.Column="1" IsToggled="True"
+                                    OnColor="{StaticResource BrandPrimary}"
+                                    ThumbColor="{StaticResource TextTertiary}" />
+                        </Grid>
+
+                        <Label x:Name="ErrorLabel"
+                               TextColor="{StaticResource Danger}" FontSize="13" IsVisible="False" />
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                    <controls:SmartButton x:Name="SaveButton" Text="Save" Variant="Primary" Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+
+</ContentPage>

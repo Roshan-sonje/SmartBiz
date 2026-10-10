@@ -38,6 +38,7 @@ public partial class ShellPage : ContentPage
                 NavRoutes.Dashboard => new DashboardPage(),
                 NavRoutes.Customers => ResolvePage<CustomersPage>(),
                 NavRoutes.Suppliers => ResolvePage<SuppliersPage>(),
+                NavRoutes.Products => ResolvePage<ProductsPage>(),
                 NavRoutes.Settings => ResolvePage<SettingsPage>(),
                 _ => BuildPlaceholder(route)
             };

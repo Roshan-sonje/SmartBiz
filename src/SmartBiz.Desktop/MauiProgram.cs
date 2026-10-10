@@ -88,6 +88,11 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
+
+        builder.Services.AddSingleton<IProductService, ProductService>();
+        builder.Services.AddTransient<ProductsViewModel>();
+        builder.Services.AddTransient<ProductsPage>();
+        builder.Services.AddTransient<ProductFormDialog>();
 #endif
 
         return builder.Build();
