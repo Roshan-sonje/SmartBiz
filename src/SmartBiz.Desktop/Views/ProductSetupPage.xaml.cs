@@ -34,8 +34,8 @@ public partial class ProductSetupPage : ContentView
         {
             "categories" => _services.GetRequiredService<CategoriesPage>(),
             "brands" => _services.GetRequiredService<BrandsPage>(),
-            "units" => BuildPlaceholder("Units"),
-            "taxes" => BuildPlaceholder("Taxes"),
+            "units" => _services.GetRequiredService<UnitsPage>(),
+            "taxes" => _services.GetRequiredService<TaxesPage>(),
             _ => BuildPlaceholder(tab)
         };
     }

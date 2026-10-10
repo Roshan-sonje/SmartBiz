@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBiz.Desktop.Views.UnitFormDialog"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    BackgroundColor="#80000000"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <controls:SmartCard Padding="32" WidthRequest="500" HorizontalOptions="Center" VerticalOptions="Center">
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="16">
+                <Label Text="Add Unit" FontSize="22" FontFamily="OpenSansSemibold" />
+
+                <VerticalStackLayout Grid.Row="1" Spacing="16">
+                    <controls:SmartTextBox x:Name="NameField" Label="Name *" Placeholder="Kilogram" />
+                    <controls:SmartTextBox x:Name="ShortNameField" Label="Short name *" Placeholder="kg" />
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="Allow decimal quantities" FontSize="14" VerticalOptions="Center" />
+                        <Switch x:Name="AllowDecimalSwitch" Grid.Column="1" OnColor="{StaticResource BrandPrimary}" />
+                    </Grid>
+
+                    <Label x:Name="ErrorLabel" TextColor="{StaticResource Danger}" FontSize="13" IsVisible="False" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                    <controls:SmartButton x:Name="SaveButton" Text="Save" Variant="Primary" Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+</ContentPage>

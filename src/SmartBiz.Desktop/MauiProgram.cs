@@ -74,6 +74,17 @@ public static class MauiProgram
         builder.Services.AddTransient<BrandFormDialog>();
         builder.Services.AddTransient<ProductSetupPage>();
 
+        builder.Services.AddSingleton<IUnitService, UnitService>();
+        builder.Services.AddSingleton<ITaxService, TaxService>();
+
+        builder.Services.AddTransient<UnitsViewModel>();
+        builder.Services.AddTransient<TaxesViewModel>();
+
+        builder.Services.AddTransient<UnitsPage>();
+        builder.Services.AddTransient<TaxesPage>();
+        builder.Services.AddTransient<UnitFormDialog>();
+        builder.Services.AddTransient<TaxFormDialog>();
+
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);

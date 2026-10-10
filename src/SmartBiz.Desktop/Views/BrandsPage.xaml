@@ -44,7 +44,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vm:BrandRow">
                             <Grid ColumnDefinitions="2*, 4*, Auto" Padding="24,14">
-                                <Label Grid.Column="0" Text="{Binding Name}" FontSize="14" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                                <Label Grid.Column="0" Text="{Binding Name}" FontSize="14" FontFamily="OpenSansSemibold" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
                                 <Label Grid.Column="1" Text="{Binding Description}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
                                 <Button Grid.Column="2" Text="🗑" FontSize="14" BackgroundColor="Transparent" Padding="8"
                                         Clicked="OnDeleteClicked" CommandParameter="{Binding .}" />

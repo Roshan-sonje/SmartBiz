@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SmartBiz.Desktop.Views.CategoriesPage"
+    x:Class="SmartBiz.Desktop.Views.UnitsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
     xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
-    x:DataType="vm:CategoriesViewModel">
+    x:DataType="vm:UnitsViewModel">
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="24" RowSpacing="12">
-
         <controls:SmartCard Grid.Row="0" Padding="24,20">
             <Grid ColumnDefinitions="*, Auto" ColumnSpacing="16">
                 <Border Grid.Column="0"
@@ -18,44 +17,37 @@
                         Padding="12,0"
                         HeightRequest="40"
                         StrokeShape="RoundRectangle 6">
-                    <Entry Placeholder="Search categories..."
+                    <Entry Placeholder="Search units..."
                            Text="{Binding SearchText}"
                            ReturnCommand="{Binding SearchCommand}"
                            BackgroundColor="Transparent"
                            FontSize="14" />
                 </Border>
                 <controls:SmartButton Grid.Column="1"
-                                      Text="+ Add Category"
+                                      Text="+ Add Unit"
                                       Variant="Primary"
                                       Clicked="OnAddClicked" />
             </Grid>
         </controls:SmartCard>
 
-        <Label Grid.Row="1"
-               Text="{Binding ErrorMessage}"
-               TextColor="{StaticResource Danger}"
-               FontSize="13"
-               IsVisible="{Binding HasError}" />
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" TextColor="{StaticResource Danger}" FontSize="13" IsVisible="{Binding HasError}" />
 
         <controls:SmartCard Grid.Row="2" Padding="0">
             <Grid RowDefinitions="Auto, *">
-                <Grid Grid.Row="0"
-                      ColumnDefinitions="2*, 3*, 2*, Auto"
-                      Padding="24,12"
-                      BackgroundColor="{StaticResource BackgroundSecondary}">
+                <Grid Grid.Row="0" ColumnDefinitions="2*, 1.5*, 1.5*, Auto" Padding="24,12" BackgroundColor="{StaticResource BackgroundSecondary}">
                     <Label Grid.Column="0" Text="NAME" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
-                    <Label Grid.Column="1" Text="DESCRIPTION" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
-                    <Label Grid.Column="2" Text="PARENT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="1" Text="SHORT NAME" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    <Label Grid.Column="2" Text="ALLOWS DECIMAL" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
                     <Label Grid.Column="3" Text="" />
                 </Grid>
 
-                <CollectionView Grid.Row="1" ItemsSource="{Binding Categories}">
+                <CollectionView Grid.Row="1" ItemsSource="{Binding Units}">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:CategoryRow">
-                            <Grid ColumnDefinitions="2*, 3*, 2*, Auto" Padding="24,14">
+                        <DataTemplate x:DataType="vm:UnitRow">
+                            <Grid ColumnDefinitions="2*, 1.5*, 1.5*, Auto" Padding="24,14">
                                 <Label Grid.Column="0" Text="{Binding Name}" FontSize="14" FontFamily="OpenSansSemibold"  TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
-                                <Label Grid.Column="1" Text="{Binding Description}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" LineBreakMode="TailTruncation" />
-                                <Label Grid.Column="2" Text="{Binding ParentName}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding ShortName}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="{Binding AllowDecimal}" FontSize="13" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
                                 <Button Grid.Column="3" Text="🗑" FontSize="14" BackgroundColor="Transparent" Padding="8"
                                         Clicked="OnDeleteClicked" CommandParameter="{Binding .}" />
                             </Grid>
@@ -64,15 +56,13 @@
 
                     <CollectionView.EmptyView>
                         <VerticalStackLayout Padding="40" Spacing="12">
-                            <Label Text="🗂" FontSize="48" HorizontalOptions="Center" />
-                            <Label Text="No categories yet" FontSize="16" FontFamily="OpenSansSemibold" HorizontalOptions="Center" />
-                            <Label Text="Add your first category to organize products." FontSize="13" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                            <Label Text="📏" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="No units yet" FontSize="16" FontFamily="OpenSansSemibold" HorizontalOptions="Center" />
+                            <Label Text="Add units like Kilogram, Piece, Litre." FontSize="13" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
                 </CollectionView>
             </Grid>
         </controls:SmartCard>
-
     </Grid>
-
 </ContentView>
