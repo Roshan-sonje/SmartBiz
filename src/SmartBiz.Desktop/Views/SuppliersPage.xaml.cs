@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartBiz.Desktop.Services;
 using SmartBiz.Desktop.ViewModels;
+using SmartBiz.Desktop.Views.Suppliers;
 
 namespace SmartBiz.Desktop.Views;
 
@@ -7,42 +9,49 @@ public partial class SuppliersPage : ContentView
 {
     private readonly SuppliersViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _loaded;
 
     public SuppliersPage(SuppliersViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
         _vm = vm;
         _services = services;
-        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-        if (Parent is not null && !_loaded)
+        if (Parent is not null)
         {
-            _loaded = true;
-            _ = _vm.LoadAsync();
+            ShowList();
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void ShowList()
     {
-        SupplierFormOverlay.Saved -= OnSupplierSaved;
-        SupplierFormOverlay.Saved += OnSupplierSaved;
-        SupplierFormOverlay.ShowForCreate();
-        await Task.CompletedTask;
+        var list = new SuppliersListView(_vm);
+
+        list.AddRequested += async (_, _) => await ShowFormAsync(null);
+        list.DeleteRequested += async (_, row) => await _vm.DeleteSupplierCommand.ExecuteAsync(row);
+
+        ContentHost.Content = list;
     }
 
-    private async void OnSupplierSaved(object? sender, EventArgs e)
+    private async Task ShowFormAsync(Guid? supplierId)
     {
-        await _vm.LoadAsync();
-    }
+        var form = new SupplierFormView(_services.GetRequiredService<ISupplierService>());
 
-    private async void OnDeleteClicked(object? sender, EventArgs e)
-    {
-        if (sender is Button btn && btn.CommandParameter is SupplierRow row)
-            await _vm.DeleteSupplierCommand.ExecuteAsync(row);
+        form.Saved += (_, _) =>
+        {
+            _ = _vm.LoadAsync();
+            ShowList();
+        };
+        form.Cancelled += (_, _) => ShowList();
+
+        ContentHost.Content = form;
+
+        if (supplierId is null)
+            await form.InitializeForCreateAsync();
+        else
+            await form.InitializeForEditAsync(supplierId.Value);
     }
 }

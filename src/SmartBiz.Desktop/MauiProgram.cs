@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SmartBiz.Desktop.Configuration;
 using SmartBiz.Desktop.Controls;
 using SmartBiz.Desktop.Services;
@@ -76,16 +76,12 @@ public static class MauiProgram
         builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<ProductSetupPage>();
 
-        // Overlays (for XAML — parameterless constructors pull deps from DI)
+        // Overlays (for XAML � parameterless constructors pull deps from DI)
         builder.Services.AddTransient<AdjustStockOverlay>();
         builder.Services.AddTransient<StockHistoryOverlay>();
         builder.Services.AddTransient<ProductFormOverlay>();
 
-        builder.Services.AddTransient<SupplierFormOverlay>();
-        builder.Services.AddTransient<CategoryFormOverlay>();
-        builder.Services.AddTransient<BrandFormOverlay>();
-        builder.Services.AddTransient<UnitFormOverlay>();
-        builder.Services.AddTransient<TaxFormOverlay>();
+
 
 
 #if DEBUG
