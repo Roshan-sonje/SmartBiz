@@ -80,12 +80,13 @@ public static class MauiProgram
         builder.Services.AddTransient<AdjustStockOverlay>();
         builder.Services.AddTransient<StockHistoryOverlay>();
         builder.Services.AddTransient<ProductFormOverlay>();
-        builder.Services.AddTransient<CustomerFormOverlay>();
+
         builder.Services.AddTransient<SupplierFormOverlay>();
         builder.Services.AddTransient<CategoryFormOverlay>();
         builder.Services.AddTransient<BrandFormOverlay>();
         builder.Services.AddTransient<UnitFormOverlay>();
         builder.Services.AddTransient<TaxFormOverlay>();
+
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -1,44 +1,39 @@
 ﻿using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Models.Customers;
 using SmartBiz.Desktop.Services;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace SmartBiz.Desktop.Controls;
+namespace SmartBiz.Desktop.Views.Customers;
 
-public partial class CustomerFormOverlay : ContentView
+public partial class CustomerFormView : ContentView
 {
-    private readonly ICustomerService _service;
+    private readonly ICustomerService _customerService;
     private Guid? _editingId;
 
     public event EventHandler? Saved;
+    public event EventHandler? Cancelled;
 
-    public CustomerFormOverlay() : this(
-    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ICustomerService>()
-        ?? throw new InvalidOperationException("Service provider not available"))
-    {
-    }
-
-    public CustomerFormOverlay(ICustomerService service)
+    public CustomerFormView(ICustomerService customerService)
     {
         InitializeComponent();
-        _service = service;
+        _customerService = customerService;
     }
 
-    public void ShowForCreate()
+    public async Task InitializeForCreateAsync()
     {
         _editingId = null;
         DialogTitle.Text = "Add Customer";
         ClearForm();
-        IsVisible = true;
+        await Task.CompletedTask;
     }
 
-    public async Task ShowForEditAsync(Guid customerId)
+    public async Task InitializeForEditAsync(Guid customerId)
     {
         try
         {
-            var c = await _service.GetCustomerAsync(customerId);
+            var c = await _customerService.GetCustomerAsync(customerId);
             _editingId = customerId;
             DialogTitle.Text = "Edit Customer";
+
             NameField.Text = c.Name;
             PhoneField.Text = c.Phone ?? string.Empty;
             EmailField.Text = c.Email ?? string.Empty;
@@ -49,18 +44,15 @@ public partial class CustomerFormOverlay : ContentView
             GstinField.Text = c.Gstin ?? string.Empty;
             BalanceField.Text = c.OpeningBalance.ToString();
             CreditLimitField.Text = c.CreditLimit.ToString();
+
             ErrorLabel.IsVisible = false;
-            IsVisible = true;
         }
         catch (Exception ex)
         {
             ErrorLabel.Text = ex.Message;
             ErrorLabel.IsVisible = true;
-            IsVisible = true;
         }
     }
-
-    public void Hide() => IsVisible = false;
 
     private void ClearForm()
     {
@@ -77,7 +69,10 @@ public partial class CustomerFormOverlay : ContentView
         ErrorLabel.IsVisible = false;
     }
 
-    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
+    private void OnCancelClicked(object? sender, EventArgs e)
+    {
+        Cancelled?.Invoke(this, EventArgs.Empty);
+    }
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -95,7 +90,7 @@ public partial class CustomerFormOverlay : ContentView
         {
             if (_editingId is null)
             {
-                await _service.CreateCustomerAsync(new CreateCustomerRequest
+                await _customerService.CreateCustomerAsync(new CreateCustomerRequest
                 {
                     Name = NameField.Text.Trim(),
                     Phone = NullIfEmpty(PhoneField.Text),
@@ -106,12 +101,12 @@ public partial class CustomerFormOverlay : ContentView
                     PostalCode = NullIfEmpty(PostalField.Text),
                     Gstin = NullIfEmpty(GstinField.Text),
                     OpeningBalance = ParseDecimal(BalanceField.Text),
-                    CreditLimit = ParseDecimal(CreditLimitField.Text),
+                    CreditLimit = ParseDecimal(CreditLimitField.Text)
                 });
             }
             else
             {
-                await _service.UpdateCustomerAsync(_editingId.Value, new UpdateCustomerRequest
+                await _customerService.UpdateCustomerAsync(_editingId.Value, new UpdateCustomerRequest
                 {
                     Name = NameField.Text.Trim(),
                     Phone = NullIfEmpty(PhoneField.Text),
@@ -127,12 +122,22 @@ public partial class CustomerFormOverlay : ContentView
                 });
             }
 
-            Hide();
             Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
-        catch (Exception) { ErrorLabel.Text = "Failed to save. Please try again."; ErrorLabel.IsVisible = true; }
-        finally { SaveButton.IsEnabled = true; }
+        catch (ApiException ex)
+        {
+            ErrorLabel.Text = ex.Message;
+            ErrorLabel.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLabel.Text = $"Failed to save: {ex.Message}";
+            ErrorLabel.IsVisible = true;
+        }
+        finally
+        {
+            SaveButton.IsEnabled = true;
+        }
     }
 
     private static string? NullIfEmpty(string? v) => string.IsNullOrWhiteSpace(v) ? null : v.Trim();

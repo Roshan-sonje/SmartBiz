@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartBiz.Desktop.ViewModels;
+using SmartBiz.Desktop.Views.Customers;
 
 namespace SmartBiz.Desktop.Views;
 
@@ -7,42 +8,49 @@ public partial class CustomersPage : ContentView
 {
     private readonly CustomersViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _loaded;
 
     public CustomersPage(CustomersViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
         _vm = vm;
         _services = services;
-        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-        if (Parent is not null && !_loaded)
+        if (Parent is not null)
         {
-            _loaded = true;
-            _ = _vm.LoadAsync();
+            ShowList();
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void ShowList()
     {
-        CustomerFormOverlay.Saved -= OnCustomerSaved;
-        CustomerFormOverlay.Saved += OnCustomerSaved;
-        CustomerFormOverlay.ShowForCreate();
-        await Task.CompletedTask;
+        var list = new CustomersListView(_vm);
+
+        list.AddRequested += async (_, _) => await ShowFormAsync(null);
+        list.DeleteRequested += async (_, row) => await _vm.DeleteCustomerCommand.ExecuteAsync(row);
+
+        ContentHost.Content = list;
     }
 
-    private async void OnCustomerSaved(object? sender, EventArgs e)
+    private async Task ShowFormAsync(Guid? customerId)
     {
-        await _vm.LoadAsync();
-    }
+        var form = new CustomerFormView(_services.GetRequiredService<Services.ICustomerService>());
 
-    private async void OnDeleteClicked(object? sender, EventArgs e)
-    {
-        if (sender is Button btn && btn.CommandParameter is CustomerRow row)
-            await _vm.DeleteCustomerCommand.ExecuteAsync(row);
+        form.Saved += (_, _) =>
+        {
+            _ = _vm.LoadAsync();
+            ShowList();
+        };
+        form.Cancelled += (_, _) => ShowList();
+
+        ContentHost.Content = form;
+
+        if (customerId is null)
+            await form.InitializeForCreateAsync();
+        else
+            await form.InitializeForEditAsync(customerId.Value);
     }
 }
