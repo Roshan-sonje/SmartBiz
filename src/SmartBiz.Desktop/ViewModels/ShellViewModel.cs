@@ -60,14 +60,15 @@ public partial class ShellViewModel : BaseViewModel
         {
             NavRoutes.Dashboard => ("Dashboard", "Overview of your business"),
             NavRoutes.Customers => ("Customers", "Manage your customer list"),
+            NavRoutes.Suppliers => ("Suppliers", "Manage your supplier list"),
             NavRoutes.Products => ("Products", "Manage your product catalog"),
+            NavRoutes.Inventory => ("Inventory", "Stock valuation and movements"),
             NavRoutes.Sales => ("Sales", "View and create sales"),
             NavRoutes.Purchases => ("Purchases", "Manage supplier purchases"),
             NavRoutes.Payments => ("Payments", "Track incoming and outgoing payments"),
             NavRoutes.Expenses => ("Expenses", "Log business expenses"),
             NavRoutes.Reports => ("Reports", "Business insights and analytics"),
             NavRoutes.Settings => ("Settings", "Configure your business"),
-            NavRoutes.Suppliers => ("Suppliers", "Manage your supplier list"),
             _ => ("SmartBiz", string.Empty)
         };
     }

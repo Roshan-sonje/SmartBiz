@@ -14,4 +14,6 @@ public interface IInventoryService
         Guid productId, int page = 1, int pageSize = 50, CancellationToken ct = default);
 
     Task<InventoryValuation> GetValuationAsync(CancellationToken ct = default);
+
+    Task<List<LowStockProduct>> GetLowStockProductsAsync(CancellationToken ct = default);
 }

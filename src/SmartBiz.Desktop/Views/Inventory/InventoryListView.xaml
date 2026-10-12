@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+             xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+             x:Class="SmartBiz.Desktop.Views.Inventory.InventoryListView"
+             x:DataType="vm:InventoryViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" MaximumWidthRequest="1200">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Inventory"
+                           FontSize="24"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="Stock valuation, movements, and low-stock alerts"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+                <controls:SmartButton Grid.Column="1"
+                                      Text="Refresh"
+                                      Variant="Secondary"
+                                      Command="{Binding RefreshCommand}" />
+            </Grid>
+
+            <!-- Error -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   FontSize="13"
+                   IsVisible="{Binding HasError}" />
+
+            <!-- SECTION 1 — Valuation Cards -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="16">
+
+                <controls:SmartCard Grid.Column="0" Padding="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📦 Products" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                        <Label Text="{Binding ProductCount}" FontSize="26" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="with stock" FontSize="11" TextColor="{StaticResource TextTertiary}" />
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <controls:SmartCard Grid.Column="1" Padding="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📊 Total Qty" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                        <Label Text="{Binding TotalQuantityText}" FontSize="26" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="units in stock" FontSize="11" TextColor="{StaticResource TextTertiary}" />
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <controls:SmartCard Grid.Column="2" Padding="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="💵 Cost Value" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                        <Label Text="{Binding PurchaseValueText}" FontSize="26" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="purchase value" FontSize="11" TextColor="{StaticResource TextTertiary}" />
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <controls:SmartCard Grid.Column="3" Padding="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📈 Potential Profit" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                        <Label Text="{Binding PotentialProfitText}" FontSize="26" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource BrandPrimary}" />
+                        <Label Text="if all sold" FontSize="11" TextColor="{StaticResource TextTertiary}" />
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+            </Grid>
+
+            <!-- SECTION 2 — Low Stock Alerts -->
+            <controls:SmartCard Padding="0" IsVisible="{Binding HasLowStock}">
+                <Grid RowDefinitions="Auto,Auto,*">
+                    <Grid Grid.Row="0" Padding="24,16" BackgroundColor="#FEF3C7" ColumnDefinitions="*,Auto">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                            <Label Text="⚠" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Low Stock Alerts" FontSize="16" FontFamily="OpenSansSemibold"
+                                   TextColor="#92400E" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1"
+                               Text="{Binding LowStockProducts.Count, StringFormat='{0} items need restocking'}"
+                               FontSize="12"
+                               TextColor="#92400E"
+                               VerticalOptions="Center" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding LowStockProducts}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LowStockRow">
+                                <Grid ColumnDefinitions="3*, 1.5*, 1.5*, 1.5*" Padding="24,12">
+                                    <Label Grid.Column="0" Text="{Binding Name}" FontSize="14"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding StockText}" FontSize="13"
+                                           TextColor="{StaticResource Danger}"
+                                           FontFamily="OpenSansSemibold"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding MinText}" FontSize="13"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="3" Text="{Binding DeficitText}" FontSize="12"
+                                           TextColor="{StaticResource Danger}"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </controls:SmartCard>
+
+            <!-- SECTION 3 — Transaction Log -->
+            <controls:SmartCard Padding="0">
+                <Grid RowDefinitions="Auto,Auto,*">
+                    <Grid Grid.Row="0" Padding="24,16">
+                        <Label Text="📋 Recent Stock Movements"
+                               FontSize="16"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                    </Grid>
+
+                    <BoxView Grid.Row="0" HeightRequest="1"
+                             Color="{StaticResource BorderDefault}"
+                             VerticalOptions="End" />
+
+                    <!-- Column headers -->
+                    <Grid Grid.Row="1"
+                          ColumnDefinitions="1.2*, 2*, 1.2*, 1*, 1*, 2.5*, 1.2*"
+                          Padding="24,12"
+                          BackgroundColor="{StaticResource BackgroundSecondary}">
+                        <Label Grid.Column="0" Text="DATE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="1" Text="PRODUCT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="2" Text="TYPE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="3" Text="QTY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="4" Text="BALANCE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="5" Text="REASON" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="6" Text="BY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="2" ItemsSource="{Binding Transactions}" MaximumHeightRequest="600">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TransactionRow">
+                                <Grid ColumnDefinitions="1.2*, 2*, 1.2*, 1*, 1*, 2.5*, 1.2*" Padding="24,12">
+                                    <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding ProductName}" FontSize="13"
+                                           TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="2" Text="{Binding TypeText}" FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                    <Label Grid.Column="3" Text="{Binding QuantityText}" FontSize="13"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="{Binding QuantityColor}" VerticalOptions="Center" />
+                                    <Label Grid.Column="4" Text="{Binding BalanceText}" FontSize="13"
+                                           TextColor="{StaticResource TextPrimary}" VerticalOptions="Center" />
+                                    <Label Grid.Column="5" Text="{Binding ReasonText}" FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="6" Text="{Binding UserText}" FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="40" Spacing="12">
+                                <Label Text="📭" FontSize="48" HorizontalOptions="Center" />
+                                <Label Text="No stock movements yet" FontSize="16"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       HorizontalOptions="Center" />
+                                <Label Text="Adjust stock on a product to see activity here."
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </Grid>
+            </controls:SmartCard>
+
+            <!-- Loading -->
+            <controls:SmartLoadingView Message="Loading inventory..."
+                                       HeightRequest="120"
+                                       IsVisible="{Binding IsLoading}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

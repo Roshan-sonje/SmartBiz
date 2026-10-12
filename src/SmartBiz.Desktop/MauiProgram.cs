@@ -81,6 +81,9 @@ public static class MauiProgram
         builder.Services.AddTransient<StockHistoryOverlay>();
         builder.Services.AddTransient<ProductFormOverlay>();
 
+        builder.Services.AddTransient<InventoryViewModel>();
+        builder.Services.AddTransient<InventoryPage>();
+
 
 
 

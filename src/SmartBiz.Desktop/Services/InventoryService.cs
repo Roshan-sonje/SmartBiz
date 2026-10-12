@@ -26,6 +26,13 @@ public class InventoryService : IInventoryService
 
         return result ?? throw new InvalidOperationException("Failed to adjust stock.");
     }
+    public async Task<List<LowStockProduct>> GetLowStockProductsAsync(CancellationToken ct = default)
+    {
+        var result = await _api.GetAsync<List<LowStockProduct>>(
+            $"/api/{AppConfig.ApiVersion}/inventory/low-stock", ct);
+
+        return result ?? new List<LowStockProduct>();
+    }
 
     public async Task<PagedResult<InventoryTransaction>> GetTransactionsAsync(
         int page = 1, int pageSize = 20, Guid? productId = null, CancellationToken ct = default)
