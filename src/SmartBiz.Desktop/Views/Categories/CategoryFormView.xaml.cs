@@ -2,36 +2,31 @@
 using SmartBiz.Desktop.Models.Categories;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Controls;
+namespace SmartBiz.Desktop.Views.Categories;
 
-public partial class CategoryFormOverlay : ContentView
+public partial class CategoryFormView : ContentView
 {
     private readonly ICategoryService _service;
+
     public event EventHandler? Saved;
+    public event EventHandler? Cancelled;
 
-    public CategoryFormOverlay() : this(
-    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ICategoryService>()
-        ?? throw new InvalidOperationException("Service provider not available"))
-    {
-    }
-
-    public CategoryFormOverlay(ICategoryService service)
+    public CategoryFormView(ICategoryService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public void ShowForCreate()
+    public Task InitializeForCreateAsync()
     {
         NameField.Text = string.Empty;
         DescriptionField.Text = string.Empty;
         ErrorLabel.IsVisible = false;
-        IsVisible = true;
+        return Task.CompletedTask;
     }
 
-    public void Hide() => IsVisible = false;
-
-    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
+    private void OnCancelClicked(object? sender, EventArgs e)
+        => Cancelled?.Invoke(this, EventArgs.Empty);
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -52,11 +47,22 @@ public partial class CategoryFormOverlay : ContentView
                 Name = NameField.Text.Trim(),
                 Description = string.IsNullOrWhiteSpace(DescriptionField.Text) ? null : DescriptionField.Text.Trim()
             });
-            Hide();
+
             Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
-        catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }
-        finally { SaveButton.IsEnabled = true; }
+        catch (ApiException ex)
+        {
+            ErrorLabel.Text = ex.Message;
+            ErrorLabel.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLabel.Text = $"Failed to save: {ex.Message}";
+            ErrorLabel.IsVisible = true;
+        }
+        finally
+        {
+            SaveButton.IsEnabled = true;
+        }
     }
 }

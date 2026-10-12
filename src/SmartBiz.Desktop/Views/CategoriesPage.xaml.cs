@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartBiz.Desktop.Services;
 using SmartBiz.Desktop.ViewModels;
+using SmartBiz.Desktop.Views.Categories;
 
 namespace SmartBiz.Desktop.Views;
 
@@ -7,42 +9,45 @@ public partial class CategoriesPage : ContentView
 {
     private readonly CategoriesViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _loaded;
 
     public CategoriesPage(CategoriesViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
         _vm = vm;
         _services = services;
-        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-        if (Parent is not null && !_loaded)
+        if (Parent is not null)
         {
-            _loaded = true;
-            _ = _vm.LoadAsync();
+            ShowList();
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void ShowList()
     {
-        CategoryFormOverlay.Saved -= OnCategorySaved;
-        CategoryFormOverlay.Saved += OnCategorySaved;
-        CategoryFormOverlay.ShowForCreate();
-        await Task.CompletedTask;
+        var list = new CategoriesListView(_vm);
+
+        list.AddRequested += async (_, _) => await ShowFormAsync();
+        list.DeleteRequested += async (_, row) => await _vm.DeleteCategoryCommand.ExecuteAsync(row);
+
+        ContentHost.Content = list;
     }
 
-    private async void OnCategorySaved(object? sender, EventArgs e)
+    private async Task ShowFormAsync()
     {
-        await _vm.LoadAsync();
-    }
+        var form = new CategoryFormView(_services.GetRequiredService<ICategoryService>());
 
-    private async void OnDeleteClicked(object? sender, EventArgs e)
-    {
-        if (sender is Button btn && btn.CommandParameter is CategoryRow row)
-            await _vm.DeleteCategoryCommand.ExecuteAsync(row);
+        form.Saved += (_, _) =>
+        {
+            _ = _vm.LoadAsync();
+            ShowList();
+        };
+        form.Cancelled += (_, _) => ShowList();
+
+        ContentHost.Content = form;
+        await form.InitializeForCreateAsync();
     }
 }

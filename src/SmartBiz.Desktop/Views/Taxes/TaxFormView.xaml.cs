@@ -2,37 +2,32 @@
 using SmartBiz.Desktop.Models.Taxes;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Controls;
+namespace SmartBiz.Desktop.Views.Taxes;
 
-public partial class TaxFormOverlay : ContentView
+public partial class TaxFormView : ContentView
 {
     private readonly ITaxService _service;
+
     public event EventHandler? Saved;
+    public event EventHandler? Cancelled;
 
-    public TaxFormOverlay() : this(
-    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ITaxService>()
-        ?? throw new InvalidOperationException("Service provider not available"))
-    {
-    }
-
-    public TaxFormOverlay(ITaxService service)
+    public TaxFormView(ITaxService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public void ShowForCreate()
+    public Task InitializeForCreateAsync()
     {
         NameField.Text = string.Empty;
         RateField.Text = string.Empty;
         DescriptionField.Text = string.Empty;
         ErrorLabel.IsVisible = false;
-        IsVisible = true;
+        return Task.CompletedTask;
     }
 
-    public void Hide() => IsVisible = false;
-
-    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
+    private void OnCancelClicked(object? sender, EventArgs e)
+        => Cancelled?.Invoke(this, EventArgs.Empty);
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -44,9 +39,10 @@ public partial class TaxFormOverlay : ContentView
             ErrorLabel.IsVisible = true;
             return;
         }
+
         if (!decimal.TryParse(RateField.Text, out var rate) || rate < 0 || rate > 100)
         {
-            ErrorLabel.Text = "Rate must be between 0 and 100.";
+            ErrorLabel.Text = "Rate must be a number between 0 and 100.";
             ErrorLabel.IsVisible = true;
             return;
         }
@@ -60,11 +56,22 @@ public partial class TaxFormOverlay : ContentView
                 Rate = rate,
                 Description = string.IsNullOrWhiteSpace(DescriptionField.Text) ? null : DescriptionField.Text.Trim()
             });
-            Hide();
+
             Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
-        catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }
-        finally { SaveButton.IsEnabled = true; }
+        catch (ApiException ex)
+        {
+            ErrorLabel.Text = ex.Message;
+            ErrorLabel.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLabel.Text = $"Failed to save: {ex.Message}";
+            ErrorLabel.IsVisible = true;
+        }
+        finally
+        {
+            SaveButton.IsEnabled = true;
+        }
     }
 }
