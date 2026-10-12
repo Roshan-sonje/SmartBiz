@@ -1,7 +1,6 @@
 ﻿using SmartBiz.Desktop.Resources.Styles;
 using SmartBiz.Desktop.Views;
 
-
 namespace SmartBiz.Desktop;
 
 public partial class App : Application
@@ -15,8 +14,11 @@ public partial class App : Application
         _services = services;
         AppColors.Register(Resources);
 
-        // Resolve LoginPage from DI so its ViewModel is injected
-        MainPage = _services.GetRequiredService<LoginPage>();
+        // Register converters
+        Resources["InverseBool"] = new Converters.InverseBoolConverter();
+
+        // Start at login
+        MainPage = new NavigationPage(_services.GetRequiredService<LoginPage>());
 
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {

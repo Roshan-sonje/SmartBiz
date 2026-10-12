@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Controls.StockHistoryOverlay"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    IsVisible="False"
+    BackgroundColor="#80000000">
+
+    <Grid>
+        <controls:SmartCard Padding="0"
+                            WidthRequest="900"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            MaximumHeightRequest="700">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                <Grid Grid.Row="0" Padding="24,20" ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label x:Name="TitleLabel" Text="Stock History" FontSize="20" FontFamily="OpenSansSemibold" TextColor="{StaticResource TextPrimary}" />
+                        <Label x:Name="SubtitleLabel" Text="" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <BoxView Grid.Row="1" HeightRequest="1" Color="{StaticResource BorderDefault}" />
+
+                <Grid Grid.Row="2" RowDefinitions="Auto,*">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="1.5*,1.2*,1*,1*,2*,1.5*"
+                          Padding="24,12"
+                          BackgroundColor="{StaticResource BackgroundSecondary}">
+                        <Label Grid.Column="0" Text="DATE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="1" Text="TYPE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="2" Text="QTY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="3" Text="BALANCE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="4" Text="REASON" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="5" Text="BY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
+
+                    <CollectionView x:Name="HistoryList" Grid.Row="1">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="1.5*,1.2*,1*,1*,2*,1.5*" Padding="24,12">
+                                    <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                    <Label Grid.Column="1" Text="{Binding TypeText}" FontSize="12" TextColor="{StaticResource TextPrimary}" />
+                                    <Label Grid.Column="2" Text="{Binding QuantityText}" FontSize="13" FontFamily="OpenSansSemibold" TextColor="{Binding QuantityColor}" />
+                                    <Label Grid.Column="3" Text="{Binding BalanceText}" FontSize="13" TextColor="{StaticResource TextPrimary}" />
+                                    <Label Grid.Column="4" Text="{Binding ReasonText}" FontSize="12" TextColor="{StaticResource TextSecondary}" LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="5" Text="{Binding UserText}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="40" Spacing="8">
+                                <Label Text="No stock movements yet" FontSize="14" HorizontalOptions="Center" TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </Grid>
+
+                <Grid Grid.Row="3" Padding="24,12" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource BackgroundSecondary}">
+                    <Label x:Name="SummaryLabel" Grid.Column="0" FontSize="12" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" />
+                    <controls:SmartButton Grid.Column="1" Text="Close" Variant="Secondary" Clicked="OnCloseClicked" />
+                </Grid>
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+</ContentView>

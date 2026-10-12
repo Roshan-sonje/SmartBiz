@@ -7,6 +7,8 @@ public class SmartTextBox : ContentView
     private readonly Label _errorLabel;
     private readonly Border _border;
 
+    public event EventHandler<TextChangedEventArgs>? TextChanged;
+
     public static readonly BindableProperty LabelProperty =
         BindableProperty.Create(nameof(Label), typeof(string), typeof(SmartTextBox), string.Empty,
             propertyChanged: (b, o, n) => ((SmartTextBox)b)._label.Text = n as string ?? string.Empty);
@@ -95,6 +97,9 @@ public class SmartTextBox : ContentView
         {
             if (Text != e.NewTextValue)
                 Text = e.NewTextValue;
+
+            // Forward the event
+            TextChanged?.Invoke(this, e);
         };
 
         _border = new Border

@@ -1,48 +1,66 @@
 ﻿using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Models.Customers;
 using SmartBiz.Desktop.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class CustomerFormDialog : ContentPage
+public partial class CustomerFormOverlay : ContentView
 {
-    private readonly ICustomerService _customerService;
+    private readonly ICustomerService _service;
     private Guid? _editingId;
 
-    public CustomerFormDialog(ICustomerService customerService)
+    public event EventHandler? Saved;
+
+    public CustomerFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ICustomerService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
     {
-        InitializeComponent();
-        _customerService = customerService;
     }
 
-    public async Task ShowForCreateAsync()
+    public CustomerFormOverlay(ICustomerService service)
+    {
+        InitializeComponent();
+        _service = service;
+    }
+
+    public void ShowForCreate()
     {
         _editingId = null;
         DialogTitle.Text = "Add Customer";
         ClearForm();
-        await ShowAsync();
+        IsVisible = true;
     }
 
     public async Task ShowForEditAsync(Guid customerId)
     {
         try
         {
-            var customer = await _customerService.GetCustomerAsync(customerId);
+            var c = await _service.GetCustomerAsync(customerId);
             _editingId = customerId;
             DialogTitle.Text = "Edit Customer";
-            PopulateForm(customer);
-            await ShowAsync();
+            NameField.Text = c.Name;
+            PhoneField.Text = c.Phone ?? string.Empty;
+            EmailField.Text = c.Email ?? string.Empty;
+            AddressField.Text = c.Address ?? string.Empty;
+            CityField.Text = c.City ?? string.Empty;
+            StateField.Text = c.State ?? string.Empty;
+            PostalField.Text = c.PostalCode ?? string.Empty;
+            GstinField.Text = c.Gstin ?? string.Empty;
+            BalanceField.Text = c.OpeningBalance.ToString();
+            CreditLimitField.Text = c.CreditLimit.ToString();
+            ErrorLabel.IsVisible = false;
+            IsVisible = true;
         }
         catch (Exception ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert("Error", ex.Message, "OK");
+            ErrorLabel.Text = ex.Message;
+            ErrorLabel.IsVisible = true;
+            IsVisible = true;
         }
     }
 
-    private async Task ShowAsync()
-    {
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
-    }
+    public void Hide() => IsVisible = false;
 
     private void ClearForm()
     {
@@ -59,24 +77,7 @@ public partial class CustomerFormDialog : ContentPage
         ErrorLabel.IsVisible = false;
     }
 
-    private void PopulateForm(Customer c)
-    {
-        NameField.Text = c.Name;
-        PhoneField.Text = c.Phone ?? string.Empty;
-        EmailField.Text = c.Email ?? string.Empty;
-        AddressField.Text = c.Address ?? string.Empty;
-        CityField.Text = c.City ?? string.Empty;
-        StateField.Text = c.State ?? string.Empty;
-        PostalField.Text = c.PostalCode ?? string.Empty;
-        GstinField.Text = c.Gstin ?? string.Empty;
-        BalanceField.Text = c.OpeningBalance.ToString();
-        CreditLimitField.Text = c.CreditLimit.ToString();
-    }
-
-    private async void OnCancelClicked(object? sender, EventArgs e)
-    {
-        await Application.Current!.MainPage!.Navigation.PopModalAsync();
-    }
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -90,12 +91,11 @@ public partial class CustomerFormDialog : ContentPage
         }
 
         SaveButton.IsEnabled = false;
-
         try
         {
             if (_editingId is null)
             {
-                var request = new CreateCustomerRequest
+                await _service.CreateCustomerAsync(new CreateCustomerRequest
                 {
                     Name = NameField.Text.Trim(),
                     Phone = NullIfEmpty(PhoneField.Text),
@@ -107,13 +107,11 @@ public partial class CustomerFormDialog : ContentPage
                     Gstin = NullIfEmpty(GstinField.Text),
                     OpeningBalance = ParseDecimal(BalanceField.Text),
                     CreditLimit = ParseDecimal(CreditLimitField.Text),
-                };
-
-                await _customerService.CreateCustomerAsync(request);
+                });
             }
             else
             {
-                var request = new UpdateCustomerRequest
+                await _service.UpdateCustomerAsync(_editingId.Value, new UpdateCustomerRequest
                 {
                     Name = NameField.Text.Trim(),
                     Phone = NullIfEmpty(PhoneField.Text),
@@ -126,33 +124,17 @@ public partial class CustomerFormDialog : ContentPage
                     OpeningBalance = ParseDecimal(BalanceField.Text),
                     CreditLimit = ParseDecimal(CreditLimitField.Text),
                     IsActive = true
-                };
-
-                await _customerService.UpdateCustomerAsync(_editingId.Value, request);
+                });
             }
 
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex)
-        {
-            ErrorLabel.Text = ex.Message;
-            ErrorLabel.IsVisible = true;
-        }
-        catch (Exception ex)
-        {
-            ErrorLabel.Text = "Failed to save. Please try again.";
-            ErrorLabel.IsVisible = true;
-            System.Diagnostics.Debug.WriteLine($"Save error: {ex}");
-        }
-        finally
-        {
-            SaveButton.IsEnabled = true;
-        }
+        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
+        catch (Exception) { ErrorLabel.Text = "Failed to save. Please try again."; ErrorLabel.IsVisible = true; }
+        finally { SaveButton.IsEnabled = true; }
     }
 
-    private static string? NullIfEmpty(string? value)
-        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-
-    private static decimal ParseDecimal(string? value)
-        => decimal.TryParse(value, out var result) ? result : 0m;
+    private static string? NullIfEmpty(string? v) => string.IsNullOrWhiteSpace(v) ? null : v.Trim();
+    private static decimal ParseDecimal(string? v) => decimal.TryParse(v, out var r) ? r : 0m;
 }

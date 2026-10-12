@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartBiz.Desktop.Controls.AdjustStockOverlay"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+    IsVisible="False"
+    BackgroundColor="#80000000">
+
+    <Grid>
+        <controls:SmartCard Padding="32"
+                            WidthRequest="500"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="16">
+
+                <Label Text="Adjust Stock" FontSize="22" FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <VerticalStackLayout Grid.Row="1" Spacing="16">
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Product" FontSize="12" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="ProductNameLabel" FontSize="16" FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                    </VerticalStackLayout>
+
+                    <Border BackgroundColor="{StaticResource BackgroundSecondary}"
+                            StrokeThickness="0" Padding="16,12"
+                            StrokeShape="RoundRectangle 6">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Grid.Column="0" Text="Current stock" FontSize="13"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label x:Name="CurrentStockLabel" Grid.Column="1"
+                                   FontSize="18" FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <controls:SmartTextBox x:Name="AdjustmentField"
+                        Label="Adjustment * (use + or -)"
+                        Placeholder="e.g. 20 or -5" />
+
+                    <controls:SmartTextBox x:Name="ReasonField"
+                        Label="Reason *"
+                        Placeholder="e.g. Received new stock, Damaged" />
+
+                    <Border BackgroundColor="{StaticResource InfoLight}"
+                            StrokeThickness="0" Padding="16,12"
+                            StrokeShape="RoundRectangle 6">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Label Grid.Column="0" Text="New balance:" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   VerticalOptions="Center" />
+                            <Label x:Name="PreviewLabel" Grid.Column="2"
+                                   Text="—"
+                                   FontSize="16" FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource Info}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Label x:Name="ErrorLabel"
+                           TextColor="{StaticResource Danger}" FontSize="13" IsVisible="False" />
+
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="End">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                    <controls:SmartButton x:Name="SaveButton" Text="Adjust Stock" Variant="Primary" Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+
+</ContentView>

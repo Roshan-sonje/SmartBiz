@@ -139,6 +139,8 @@
             </Grid>
         </controls:SmartCard>
 
+        <controls:SupplierFormOverlay x:Name="SupplierFormOverlay" />
+
     </Grid>
 
 </ContentView>

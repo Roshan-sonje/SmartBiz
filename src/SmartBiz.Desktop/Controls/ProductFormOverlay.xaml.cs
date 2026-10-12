@@ -1,4 +1,5 @@
-﻿using SmartBiz.Desktop.Exceptions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Models.Categories;
 using SmartBiz.Desktop.Models.Brands;
 using SmartBiz.Desktop.Models.Units;
@@ -6,9 +7,9 @@ using SmartBiz.Desktop.Models.Taxes;
 using SmartBiz.Desktop.Models.Products;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class ProductFormDialog : ContentPage
+public partial class ProductFormOverlay : ContentView
 {
     private readonly IProductService _productService;
     private readonly ICategoryService _categoryService;
@@ -21,7 +22,24 @@ public partial class ProductFormDialog : ContentPage
     private List<UnitListItem> _units = new();
     private List<TaxListItem> _taxes = new();
 
-    public ProductFormDialog(
+    public event EventHandler? Saved;
+    public event EventHandler? Closed;
+
+    public ProductFormOverlay() : this(
+        Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IProductService>()
+            ?? throw new InvalidOperationException("Service provider not available"),
+        Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ICategoryService>()
+            ?? throw new InvalidOperationException("Service provider not available"),
+        Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IBrandService>()
+            ?? throw new InvalidOperationException("Service provider not available"),
+        Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IUnitService>()
+            ?? throw new InvalidOperationException("Service provider not available"),
+        Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ITaxService>()
+            ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public ProductFormOverlay(
         IProductService productService,
         ICategoryService categoryService,
         IBrandService brandService,
@@ -38,12 +56,20 @@ public partial class ProductFormDialog : ContentPage
 
     public async Task ShowForCreateAsync()
     {
-        DialogTitle.Text = "Add Product";
         ClearForm();
         ErrorLabel.IsVisible = false;
 
+        InputTransparent = false;
+        IsVisible = true;
+
         await LoadLookupsAsync();
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        InputTransparent = true;
+        Closed?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task LoadLookupsAsync()
@@ -91,8 +117,7 @@ public partial class ProductFormDialog : ContentPage
         TaxPicker.SelectedIndex = -1;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-        => await Application.Current!.MainPage!.Navigation.PopModalAsync();
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -143,7 +168,9 @@ public partial class ProductFormDialog : ContentPage
             };
 
             await _productService.CreateProductAsync(request);
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
         catch (ApiException ex)
         {
@@ -152,9 +179,8 @@ public partial class ProductFormDialog : ContentPage
         }
         catch (Exception ex)
         {
-            ErrorLabel.Text = "Failed to save. Please try again.";
+            ErrorLabel.Text = $"Failed to save: {ex.Message}";
             ErrorLabel.IsVisible = true;
-            System.Diagnostics.Debug.WriteLine($"Product save error: {ex}");
         }
         finally
         {

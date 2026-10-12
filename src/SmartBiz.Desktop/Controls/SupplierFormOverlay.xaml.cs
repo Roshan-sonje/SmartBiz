@@ -2,26 +2,33 @@
 using SmartBiz.Desktop.Models.Suppliers;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class SupplierFormDialog : ContentPage
+public partial class SupplierFormOverlay : ContentView
 {
-    private readonly ISupplierService _supplierService;
-    private Guid? _editingId;
+    private readonly ISupplierService _service;
 
-    public SupplierFormDialog(ISupplierService supplierService)
+    public event EventHandler? Saved;
+
+    public SupplierFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ISupplierService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public SupplierFormOverlay(ISupplierService service)
     {
         InitializeComponent();
-        _supplierService = supplierService;
+        _service = service;
     }
 
-    public async Task ShowForCreateAsync()
+    public void ShowForCreate()
     {
-        _editingId = null;
-        DialogTitle.Text = "Add Supplier";
         ClearForm();
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+        IsVisible = true;
     }
+
+    public void Hide() => IsVisible = false;
 
     private void ClearForm()
     {
@@ -37,10 +44,7 @@ public partial class SupplierFormDialog : ContentPage
         ErrorLabel.IsVisible = false;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-    {
-        await Application.Current!.MainPage!.Navigation.PopModalAsync();
-    }
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -54,10 +58,9 @@ public partial class SupplierFormDialog : ContentPage
         }
 
         SaveButton.IsEnabled = false;
-
         try
         {
-            var request = new CreateSupplierRequest
+            await _service.CreateSupplierAsync(new CreateSupplierRequest
             {
                 Name = NameField.Text.Trim(),
                 Phone = NullIfEmpty(PhoneField.Text),
@@ -68,30 +71,16 @@ public partial class SupplierFormDialog : ContentPage
                 PostalCode = NullIfEmpty(PostalField.Text),
                 Gstin = NullIfEmpty(GstinField.Text),
                 OpeningBalance = ParseDecimal(BalanceField.Text),
-            };
+            });
 
-            await _supplierService.CreateSupplierAsync(request);
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex)
-        {
-            ErrorLabel.Text = ex.Message;
-            ErrorLabel.IsVisible = true;
-        }
-        catch (Exception)
-        {
-            ErrorLabel.Text = "Failed to save. Please try again.";
-            ErrorLabel.IsVisible = true;
-        }
-        finally
-        {
-            SaveButton.IsEnabled = true;
-        }
+        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
+        catch (Exception) { ErrorLabel.Text = "Failed to save. Please try again."; ErrorLabel.IsVisible = true; }
+        finally { SaveButton.IsEnabled = true; }
     }
 
-    private static string? NullIfEmpty(string? value)
-        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-
-    private static decimal ParseDecimal(string? value)
-        => decimal.TryParse(value, out var result) ? result : 0m;
+    private static string? NullIfEmpty(string? v) => string.IsNullOrWhiteSpace(v) ? null : v.Trim();
+    private static decimal ParseDecimal(string? v) => decimal.TryParse(v, out var r) ? r : 0m;
 }

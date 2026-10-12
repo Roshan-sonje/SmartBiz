@@ -5,38 +5,44 @@ namespace SmartBiz.Desktop.Views;
 
 public partial class CategoriesPage : ContentView
 {
-    private readonly CategoriesViewModel _viewModel;
+    private readonly CategoriesViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _hasLoaded;
+    private bool _loaded;
 
-    public CategoriesPage(CategoriesViewModel viewModel, IServiceProvider services)
+    public CategoriesPage(CategoriesViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
-        _viewModel = viewModel;
+        _vm = vm;
         _services = services;
-        BindingContext = viewModel;
+        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-        if (Parent is not null && !_hasLoaded)
+        if (Parent is not null && !_loaded)
         {
-            _hasLoaded = true;
-            _ = _viewModel.LoadAsync();
+            _loaded = true;
+            _ = _vm.LoadAsync();
         }
     }
 
     private async void OnAddClicked(object? sender, EventArgs e)
     {
-        var dlg = _services.GetRequiredService<CategoryFormDialog>();
-        await dlg.ShowForCreateAsync();
-        await _viewModel.LoadAsync();
+        CategoryFormOverlay.Saved -= OnCategorySaved;
+        CategoryFormOverlay.Saved += OnCategorySaved;
+        CategoryFormOverlay.ShowForCreate();
+        await Task.CompletedTask;
+    }
+
+    private async void OnCategorySaved(object? sender, EventArgs e)
+    {
+        await _vm.LoadAsync();
     }
 
     private async void OnDeleteClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is CategoryRow row)
-            await _viewModel.DeleteCategoryCommand.ExecuteAsync(row);
+            await _vm.DeleteCategoryCommand.ExecuteAsync(row);
     }
 }

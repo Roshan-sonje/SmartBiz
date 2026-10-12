@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartBiz.Desktop.Configuration;
+using SmartBiz.Desktop.Controls;
 using SmartBiz.Desktop.Services;
 using SmartBiz.Desktop.ViewModels;
 using SmartBiz.Desktop.Views;
@@ -19,6 +20,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        // HTTP
         builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
         {
             client.BaseAddress = new Uri(AppConfig.ApiBaseUrl);
@@ -33,6 +35,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<IBusinessService, BusinessService>();
         builder.Services.AddSingleton<IUserService, UserService>();
+        builder.Services.AddSingleton<ICustomerService, CustomerService>();
+        builder.Services.AddSingleton<ISupplierService, SupplierService>();
+        builder.Services.AddSingleton<ICategoryService, CategoryService>();
+        builder.Services.AddSingleton<IBrandService, BrandService>();
+        builder.Services.AddSingleton<IUnitService, UnitService>();
+        builder.Services.AddSingleton<ITaxService, TaxService>();
+        builder.Services.AddSingleton<IProductService, ProductService>();
+        builder.Services.AddSingleton<IInventoryService, InventoryService>();
 
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();
@@ -41,6 +51,13 @@ public static class MauiProgram
         builder.Services.AddTransient<BusinessProfileViewModel>();
         builder.Services.AddTransient<UsersViewModel>();
         builder.Services.AddTransient<InvoiceSettingsViewModel>();
+        builder.Services.AddTransient<CustomersViewModel>();
+        builder.Services.AddTransient<SuppliersViewModel>();
+        builder.Services.AddTransient<ProductsViewModel>();
+        builder.Services.AddTransient<CategoriesViewModel>();
+        builder.Services.AddTransient<BrandsViewModel>();
+        builder.Services.AddTransient<UnitsViewModel>();
+        builder.Services.AddTransient<TaxesViewModel>();
 
         // Views
         builder.Services.AddTransient<LoginPage>();
@@ -49,50 +66,30 @@ public static class MauiProgram
         builder.Services.AddTransient<BusinessProfilePage>();
         builder.Services.AddTransient<UsersPage>();
         builder.Services.AddTransient<InvoiceSettingsPage>();
-        builder.Services.AddTransient<SettingsPage>();
-
-        builder.Services.AddSingleton<ICustomerService, CustomerService>();
-        builder.Services.AddTransient<CustomersViewModel>();
         builder.Services.AddTransient<CustomersPage>();
-        builder.Services.AddTransient<CustomerFormDialog>();
-
-        builder.Services.AddSingleton<ISupplierService, SupplierService>();
-        builder.Services.AddTransient<SuppliersViewModel>();
         builder.Services.AddTransient<SuppliersPage>();
-        builder.Services.AddTransient<SupplierFormDialog>();
-
-
-        builder.Services.AddSingleton<ICategoryService, CategoryService>();
-        builder.Services.AddSingleton<IBrandService, BrandService>();
-
-        builder.Services.AddTransient<CategoriesViewModel>();
-        builder.Services.AddTransient<BrandsViewModel>();
-
+        builder.Services.AddTransient<ProductsPage>();
         builder.Services.AddTransient<CategoriesPage>();
         builder.Services.AddTransient<BrandsPage>();
-        builder.Services.AddTransient<CategoryFormDialog>();
-        builder.Services.AddTransient<BrandFormDialog>();
-        builder.Services.AddTransient<ProductSetupPage>();
-
-        builder.Services.AddSingleton<IUnitService, UnitService>();
-        builder.Services.AddSingleton<ITaxService, TaxService>();
-
-        builder.Services.AddTransient<UnitsViewModel>();
-        builder.Services.AddTransient<TaxesViewModel>();
-
         builder.Services.AddTransient<UnitsPage>();
         builder.Services.AddTransient<TaxesPage>();
-        builder.Services.AddTransient<UnitFormDialog>();
-        builder.Services.AddTransient<TaxFormDialog>();
+        builder.Services.AddTransient<SettingsPage>();
+        builder.Services.AddTransient<ProductSetupPage>();
+
+        // Overlays (for XAML — parameterless constructors pull deps from DI)
+        builder.Services.AddTransient<AdjustStockOverlay>();
+        builder.Services.AddTransient<StockHistoryOverlay>();
+        builder.Services.AddTransient<ProductFormOverlay>();
+        builder.Services.AddTransient<CustomerFormOverlay>();
+        builder.Services.AddTransient<SupplierFormOverlay>();
+        builder.Services.AddTransient<CategoryFormOverlay>();
+        builder.Services.AddTransient<BrandFormOverlay>();
+        builder.Services.AddTransient<UnitFormOverlay>();
+        builder.Services.AddTransient<TaxFormOverlay>();
 
 #if DEBUG
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
-
-        builder.Services.AddSingleton<IProductService, ProductService>();
-        builder.Services.AddTransient<ProductsViewModel>();
-        builder.Services.AddTransient<ProductsPage>();
-        builder.Services.AddTransient<ProductFormDialog>();
 #endif
 
         return builder.Build();

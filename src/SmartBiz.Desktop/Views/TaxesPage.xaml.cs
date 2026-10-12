@@ -27,10 +27,15 @@ public partial class TaxesPage : ContentView
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void OnAddClicked(object? sender, EventArgs e)
     {
-        var dlg = _services.GetRequiredService<TaxFormDialog>();
-        await dlg.ShowForCreateAsync();
+        TaxFormOverlay.Saved -= OnTaxSaved;
+        TaxFormOverlay.Saved += OnTaxSaved;
+        TaxFormOverlay.ShowForCreate();
+    }
+
+    private async void OnTaxSaved(object? sender, EventArgs e)
+    {
         await _vm.LoadAsync();
     }
 

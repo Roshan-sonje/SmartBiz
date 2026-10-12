@@ -27,10 +27,15 @@ public partial class UnitsPage : ContentView
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void OnAddClicked(object? sender, EventArgs e)
     {
-        var dlg = _services.GetRequiredService<UnitFormDialog>();
-        await dlg.ShowForCreateAsync();
+        UnitFormOverlay.Saved -= OnUnitSaved;
+        UnitFormOverlay.Saved += OnUnitSaved;
+        UnitFormOverlay.ShowForCreate();
+    }
+
+    private async void OnUnitSaved(object? sender, EventArgs e)
+    {
         await _vm.LoadAsync();
     }
 

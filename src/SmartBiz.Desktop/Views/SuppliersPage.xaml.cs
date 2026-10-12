@@ -5,41 +5,44 @@ namespace SmartBiz.Desktop.Views;
 
 public partial class SuppliersPage : ContentView
 {
-    private readonly SuppliersViewModel _viewModel;
+    private readonly SuppliersViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _hasLoaded;
+    private bool _loaded;
 
-    public SuppliersPage(SuppliersViewModel viewModel, IServiceProvider services)
+    public SuppliersPage(SuppliersViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
-        _viewModel = viewModel;
+        _vm = vm;
         _services = services;
-        BindingContext = viewModel;
+        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-
-        if (Parent is not null && !_hasLoaded)
+        if (Parent is not null && !_loaded)
         {
-            _hasLoaded = true;
-            _ = _viewModel.LoadAsync();
+            _loaded = true;
+            _ = _vm.LoadAsync();
         }
     }
 
     private async void OnAddClicked(object? sender, EventArgs e)
     {
-        var dialog = _services.GetRequiredService<SupplierFormDialog>();
-        await dialog.ShowForCreateAsync();
-        await _viewModel.LoadAsync();
+        SupplierFormOverlay.Saved -= OnSupplierSaved;
+        SupplierFormOverlay.Saved += OnSupplierSaved;
+        SupplierFormOverlay.ShowForCreate();
+        await Task.CompletedTask;
+    }
+
+    private async void OnSupplierSaved(object? sender, EventArgs e)
+    {
+        await _vm.LoadAsync();
     }
 
     private async void OnDeleteClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is SupplierRow row)
-        {
-            await _viewModel.DeleteSupplierCommand.ExecuteAsync(row);
-        }
+            await _vm.DeleteSupplierCommand.ExecuteAsync(row);
     }
 }

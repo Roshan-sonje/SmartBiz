@@ -27,10 +27,15 @@ public partial class BrandsPage : ContentView
         }
     }
 
-    private async void OnAddClicked(object? sender, EventArgs e)
+    private void OnAddClicked(object? sender, EventArgs e)
     {
-        var dlg = _services.GetRequiredService<BrandFormDialog>();
-        await dlg.ShowForCreateAsync();
+        BrandFormOverlay.Saved -= OnBrandSaved;
+        BrandFormOverlay.Saved += OnBrandSaved;
+        BrandFormOverlay.ShowForCreate();
+    }
+
+    private async void OnBrandSaved(object? sender, EventArgs e)
+    {
         await _vm.LoadAsync();
     }
 

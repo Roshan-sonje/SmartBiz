@@ -2,31 +2,36 @@
 using SmartBiz.Desktop.Models.Categories;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class CategoryFormDialog : ContentPage
+public partial class CategoryFormOverlay : ContentView
 {
     private readonly ICategoryService _service;
+    public event EventHandler? Saved;
 
-    public CategoryFormDialog(ICategoryService service)
+    public CategoryFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ICategoryService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public CategoryFormOverlay(ICategoryService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public async Task ShowForCreateAsync()
+    public void ShowForCreate()
     {
-        DialogTitle.Text = "Add Category";
         NameField.Text = string.Empty;
         DescriptionField.Text = string.Empty;
         ErrorLabel.IsVisible = false;
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+        IsVisible = true;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-    {
-        await Application.Current!.MainPage!.Navigation.PopModalAsync();
-    }
+    public void Hide() => IsVisible = false;
+
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -47,21 +52,11 @@ public partial class CategoryFormDialog : ContentPage
                 Name = NameField.Text.Trim(),
                 Description = string.IsNullOrWhiteSpace(DescriptionField.Text) ? null : DescriptionField.Text.Trim()
             });
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
-        catch (ApiException ex)
-        {
-            ErrorLabel.Text = ex.Message;
-            ErrorLabel.IsVisible = true;
-        }
-        catch (Exception)
-        {
-            ErrorLabel.Text = "Failed to save.";
-            ErrorLabel.IsVisible = true;
-        }
-        finally
-        {
-            SaveButton.IsEnabled = true;
-        }
+        catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
+        catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }
+        finally { SaveButton.IsEnabled = true; }
     }
 }

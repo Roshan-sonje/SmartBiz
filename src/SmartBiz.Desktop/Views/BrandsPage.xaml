@@ -61,5 +61,7 @@
                 </CollectionView>
             </Grid>
         </controls:SmartCard>
+
+        <controls:BrandFormOverlay x:Name="BrandFormOverlay" />
     </Grid>
 </ContentView>

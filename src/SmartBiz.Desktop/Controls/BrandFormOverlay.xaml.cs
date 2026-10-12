@@ -2,28 +2,36 @@
 using SmartBiz.Desktop.Models.Brands;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class BrandFormDialog : ContentPage
+public partial class BrandFormOverlay : ContentView
 {
     private readonly IBrandService _service;
+    public event EventHandler? Saved;
 
-    public BrandFormDialog(IBrandService service)
+    public BrandFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IBrandService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public BrandFormOverlay(IBrandService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public async Task ShowForCreateAsync()
+    public void ShowForCreate()
     {
         NameField.Text = string.Empty;
         DescriptionField.Text = string.Empty;
         ErrorLabel.IsVisible = false;
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+        IsVisible = true;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-        => await Application.Current!.MainPage!.Navigation.PopModalAsync();
+    public void Hide() => IsVisible = false;
+
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -44,7 +52,8 @@ public partial class BrandFormDialog : ContentPage
                 Name = NameField.Text.Trim(),
                 Description = string.IsNullOrWhiteSpace(DescriptionField.Text) ? null : DescriptionField.Text.Trim()
             });
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
         catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
         catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }

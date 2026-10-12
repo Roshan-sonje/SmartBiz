@@ -2,29 +2,37 @@
 using SmartBiz.Desktop.Models.Taxes;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class TaxFormDialog : ContentPage
+public partial class TaxFormOverlay : ContentView
 {
     private readonly ITaxService _service;
+    public event EventHandler? Saved;
 
-    public TaxFormDialog(ITaxService service)
+    public TaxFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<ITaxService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public TaxFormOverlay(ITaxService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public async Task ShowForCreateAsync()
+    public void ShowForCreate()
     {
         NameField.Text = string.Empty;
         RateField.Text = string.Empty;
         DescriptionField.Text = string.Empty;
         ErrorLabel.IsVisible = false;
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+        IsVisible = true;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-        => await Application.Current!.MainPage!.Navigation.PopModalAsync();
+    public void Hide() => IsVisible = false;
+
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -36,10 +44,9 @@ public partial class TaxFormDialog : ContentPage
             ErrorLabel.IsVisible = true;
             return;
         }
-
         if (!decimal.TryParse(RateField.Text, out var rate) || rate < 0 || rate > 100)
         {
-            ErrorLabel.Text = "Rate must be a number between 0 and 100.";
+            ErrorLabel.Text = "Rate must be between 0 and 100.";
             ErrorLabel.IsVisible = true;
             return;
         }
@@ -53,7 +60,8 @@ public partial class TaxFormDialog : ContentPage
                 Rate = rate,
                 Description = string.IsNullOrWhiteSpace(DescriptionField.Text) ? null : DescriptionField.Text.Trim()
             });
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
         catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
         catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }

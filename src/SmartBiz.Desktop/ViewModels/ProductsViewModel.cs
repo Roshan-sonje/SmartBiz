@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SmartBiz.Desktop.Exceptions;
 using SmartBiz.Desktop.Services;
+using System.Collections.ObjectModel;
+using Windows.Services.Maps;
 
 namespace SmartBiz.Desktop.ViewModels;
 
@@ -56,6 +57,7 @@ public partial class ProductsViewModel : BaseViewModel
                     BrandName = p.BrandName ?? "—",
                     SellingPriceText = p.SellingPrice.ToString("N2"),
                     StockText = $"{p.StockQuantity:0.##} {p.UnitShortName ?? ""}".Trim(),
+                    StockQuantity = p.StockQuantity,                 // ← ADD THIS
                     IsLowStock = p.IsLowStock,
                     StockColor = p.IsLowStock ? "#DC2626" : "#059669"
                 });
@@ -127,6 +129,7 @@ public class ProductRow
     public string BrandName { get; set; } = string.Empty;
     public string SellingPriceText { get; set; } = string.Empty;
     public string StockText { get; set; } = string.Empty;
+    public decimal StockQuantity { get; set; }        // ← ADD THIS
     public bool IsLowStock { get; set; }
     public string StockColor { get; set; } = "#059669";
 }

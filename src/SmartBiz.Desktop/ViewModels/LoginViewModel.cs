@@ -63,7 +63,8 @@ public partial class LoginViewModel : BaseViewModel
                     return;
                 }
 
-                Application.Current!.MainPage = shellPage;
+                // Wrap shell in NavigationPage too so nested navigation works
+                Application.Current!.MainPage = new NavigationPage(shellPage);
             });
         }
         catch (ApiException ex)

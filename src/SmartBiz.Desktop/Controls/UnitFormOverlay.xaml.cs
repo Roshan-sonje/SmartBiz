@@ -2,29 +2,37 @@
 using SmartBiz.Desktop.Models.Units;
 using SmartBiz.Desktop.Services;
 
-namespace SmartBiz.Desktop.Views;
+namespace SmartBiz.Desktop.Controls;
 
-public partial class UnitFormDialog : ContentPage
+public partial class UnitFormOverlay : ContentView
 {
     private readonly IUnitService _service;
+    public event EventHandler? Saved;
 
-    public UnitFormDialog(IUnitService service)
+    public UnitFormOverlay() : this(
+    Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IUnitService>()
+        ?? throw new InvalidOperationException("Service provider not available"))
+    {
+    }
+
+    public UnitFormOverlay(IUnitService service)
     {
         InitializeComponent();
         _service = service;
     }
 
-    public async Task ShowForCreateAsync()
+    public void ShowForCreate()
     {
         NameField.Text = string.Empty;
         ShortNameField.Text = string.Empty;
         AllowDecimalSwitch.IsToggled = false;
         ErrorLabel.IsVisible = false;
-        await Application.Current!.MainPage!.Navigation.PushModalAsync(this);
+        IsVisible = true;
     }
 
-    private async void OnCancelClicked(object? sender, EventArgs e)
-        => await Application.Current!.MainPage!.Navigation.PopModalAsync();
+    public void Hide() => IsVisible = false;
+
+    private void OnCancelClicked(object? sender, EventArgs e) => Hide();
 
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -52,7 +60,8 @@ public partial class UnitFormDialog : ContentPage
                 ShortName = ShortNameField.Text.Trim(),
                 AllowDecimal = AllowDecimalSwitch.IsToggled
             });
-            await Application.Current!.MainPage!.Navigation.PopModalAsync();
+            Hide();
+            Saved?.Invoke(this, EventArgs.Empty);
         }
         catch (ApiException ex) { ErrorLabel.Text = ex.Message; ErrorLabel.IsVisible = true; }
         catch (Exception) { ErrorLabel.Text = "Failed to save."; ErrorLabel.IsVisible = true; }

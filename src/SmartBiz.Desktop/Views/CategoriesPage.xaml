@@ -73,6 +73,7 @@
             </Grid>
         </controls:SmartCard>
 
+        <controls:CategoryFormOverlay x:Name="CategoryFormOverlay" />
     </Grid>
 
 </ContentView>

@@ -83,7 +83,7 @@ public partial class ShellViewModel : BaseViewModel
             var loginPage = Application.Current?.Handler?.MauiContext?.Services
                 .GetService<Views.LoginPage>();
             if (loginPage is not null && Application.Current is not null)
-                Application.Current.MainPage = loginPage;
+                Application.Current.MainPage = new NavigationPage(loginPage);
         });
     }
 

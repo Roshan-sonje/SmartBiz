@@ -5,41 +5,44 @@ namespace SmartBiz.Desktop.Views;
 
 public partial class CustomersPage : ContentView
 {
-    private readonly CustomersViewModel _viewModel;
+    private readonly CustomersViewModel _vm;
     private readonly IServiceProvider _services;
-    private bool _hasLoaded;
+    private bool _loaded;
 
-    public CustomersPage(CustomersViewModel viewModel, IServiceProvider services)
+    public CustomersPage(CustomersViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
-        _viewModel = viewModel;
+        _vm = vm;
         _services = services;
-        BindingContext = viewModel;
+        BindingContext = vm;
     }
 
     protected override void OnParentSet()
     {
         base.OnParentSet();
-
-        if (Parent is not null && !_hasLoaded)
+        if (Parent is not null && !_loaded)
         {
-            _hasLoaded = true;
-            _ = _viewModel.LoadAsync();
+            _loaded = true;
+            _ = _vm.LoadAsync();
         }
     }
 
     private async void OnAddClicked(object? sender, EventArgs e)
     {
-        var dialog = _services.GetRequiredService<CustomerFormDialog>();
-        await dialog.ShowForCreateAsync();
-        await _viewModel.LoadAsync();
+        CustomerFormOverlay.Saved -= OnCustomerSaved;
+        CustomerFormOverlay.Saved += OnCustomerSaved;
+        CustomerFormOverlay.ShowForCreate();
+        await Task.CompletedTask;
+    }
+
+    private async void OnCustomerSaved(object? sender, EventArgs e)
+    {
+        await _vm.LoadAsync();
     }
 
     private async void OnDeleteClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is CustomerRow row)
-        {
-            await _viewModel.DeleteCustomerCommand.ExecuteAsync(row);
-        }
+            await _vm.DeleteCustomerCommand.ExecuteAsync(row);
     }
 }
