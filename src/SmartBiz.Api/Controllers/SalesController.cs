@@ -22,6 +22,15 @@ public class SalesController : ControllerBase
         _currentUser = currentUser;
     }
 
+
+    [HttpGet("summary")]
+    [ProducesResponseType(typeof(SalesSummaryDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSummary(CancellationToken ct)
+    {
+        var businessId = GetBusinessIdOrThrow();
+        return Ok(await _saleService.GetSummaryAsync(businessId, ct));
+    }
+
     [HttpGet]
     [ProducesResponseType(typeof(PagedResult<SaleListItemDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSales(

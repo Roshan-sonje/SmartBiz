@@ -453,4 +453,44 @@ public class SaleService : ISaleService
             LineTotal = i.LineTotal
         }).ToList()
     };
+
+
+    public async Task<SalesSummaryDto> GetSummaryAsync(Guid businessId, CancellationToken ct = default)
+    {
+        var now = DateTime.UtcNow;
+        var today = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
+        var tomorrow = today.AddDays(1);
+        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var nextMonth = monthStart.AddMonths(1);
+
+        var activeSales = _db.Sales
+            .IgnoreQueryFilters()
+            .Where(s => s.BusinessId == businessId && s.Status != SaleStatus.Cancelled);
+
+        // Today
+        var todaySales = await activeSales
+            .Where(s => s.InvoiceDate >= today && s.InvoiceDate < tomorrow)
+            .Select(s => s.GrandTotal)
+            .ToListAsync(ct);
+
+        // This month
+        var monthSales = await activeSales
+            .Where(s => s.InvoiceDate >= monthStart && s.InvoiceDate < nextMonth)
+            .Select(s => s.GrandTotal)
+            .ToListAsync(ct);
+
+        // Unpaid total
+        var unpaidTotal = await activeSales
+            .Where(s => s.DueAmount > 0)
+            .SumAsync(s => s.DueAmount, ct);
+
+        return new SalesSummaryDto
+        {
+            TodayCount = todaySales.Count,
+            TodayTotal = todaySales.Sum(),
+            MonthCount = monthSales.Count,
+            MonthTotal = monthSales.Sum(),
+            UnpaidTotal = unpaidTotal
+        };
+    }
 }

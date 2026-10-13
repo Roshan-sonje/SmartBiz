@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using SmartBiz.Application.Common;
 using SmartBiz.Application.Interfaces;
 using SmartBiz.Infrastructure.Authentication;
@@ -18,8 +19,18 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException(
                 "Connection string 'DefaultConnection' not found in configuration.");
 
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+        dataSourceBuilder.EnableUnmappedTypes();
+
         services.AddDbContext<SmartBizDbContext>(options =>
-            options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorCodesToAdd: null);
+        npgsqlOptions.CommandTimeout(30);
+    }));
 
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<SmartBizDbContext>());

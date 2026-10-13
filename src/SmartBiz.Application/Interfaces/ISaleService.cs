@@ -23,4 +23,5 @@ public interface ISaleService
     Task<SaleDto> CancelSaleAsync(Guid businessId, Guid saleId, string reason, CancellationToken ct = default);
 
     Task<string> GetNextInvoiceNumberAsync(Guid businessId, CancellationToken ct = default);
+    Task<SalesSummaryDto> GetSummaryAsync(Guid businessId, CancellationToken ct = default);
 }
