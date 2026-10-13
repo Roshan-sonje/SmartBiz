@@ -84,6 +84,10 @@ public static class MauiProgram
         builder.Services.AddTransient<InventoryViewModel>();
         builder.Services.AddTransient<InventoryPage>();
 
+        builder.Services.AddSingleton<ISaleService, SaleService>();
+        builder.Services.AddTransient<SalesViewModel>();
+        builder.Services.AddTransient<SalesPage>();
+
 
 
 
