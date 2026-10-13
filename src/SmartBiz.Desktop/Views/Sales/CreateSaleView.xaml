@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+             xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+             xmlns:views="clr-namespace:SmartBiz.Desktop.Views.Sales"
+             x:Class="SmartBiz.Desktop.Views.Sales.CreateSaleView"
+             x:DataType="vm:CreateSaleViewModel">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="24" Spacing="20" MaximumWidthRequest="1200">
+
+                <!-- Header -->
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Create New Sale"
+                           FontSize="24"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="Add products, customer, and payment details"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+
+                <!-- Error -->
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="{StaticResource Danger}"
+                       FontSize="13"
+                       IsVisible="{Binding HasError}" />
+
+                <!-- Customer & Date Section -->
+                <controls:SmartCard Padding="24">
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="Customer &amp; Date"
+                               FontSize="15"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+
+                            <!-- Customer Picker -->
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label Text="Customer"
+                                       FontSize="12"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border Stroke="{StaticResource BorderDefault}"
+        StrokeThickness="1"
+        Padding="0"
+        HeightRequest="40"
+        VerticalOptions="Start"
+        StrokeShape="RoundRectangle 6">
+                                    <Picker ItemsSource="{Binding Customers}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedCustomer}"
+            Title=""
+            TextColor="{StaticResource TextPrimary}"
+            BackgroundColor="{StaticResource SurfacePrimary}"
+            FontSize="14"
+            HeightRequest="40"
+            VerticalOptions="Center"
+            HorizontalOptions="Fill"
+            Margin="12,0" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Invoice Date -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label Text="Invoice date"
+                                       FontSize="12"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                                        Stroke="{StaticResource BorderDefault}"
+                                        StrokeThickness="1"
+                                        Padding="12,0"
+                                        HeightRequest="40"
+                                        VerticalOptions="Start"
+                                        StrokeShape="RoundRectangle 6">
+                                    <DatePicker Date="{Binding InvoiceDate}"
+                                                TextColor="{StaticResource TextPrimary}"
+                                                BackgroundColor="Transparent"
+                                                FontSize="14"
+                                                HeightRequest="40"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Fill" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <controls:SmartTextBox x:Name="NotesField"
+                            Label="Notes"
+                            Placeholder="Optional notes for this sale" />
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <!-- Line Items Section -->
+                <controls:SmartCard Padding="0">
+                    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                        <Grid Grid.Row="0" Padding="24,16" ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Line Items"
+                                   FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center" />
+                            <controls:SmartButton Grid.Column="1"
+                                                  Text="+ Add Product"
+                                                  Variant="Primary"
+                                                  Clicked="OnAddProductClicked" />
+                        </Grid>
+
+                        <BoxView Grid.Row="0"
+                                 HeightRequest="1"
+                                 Color="{StaticResource BorderDefault}"
+                                 VerticalOptions="End" />
+
+                        <!-- Column headers -->
+                        <Grid Grid.Row="1"
+                              ColumnDefinitions="3*, 1*, 1.5*, 1.5*, 1*, 1.5*, Auto"
+                              Padding="24,12"
+                              BackgroundColor="{StaticResource BackgroundSecondary}">
+                            <Label Grid.Column="0" Text="PRODUCT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="1" Text="QTY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="2" Text="PRICE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="3" Text="DISCOUNT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="4" Text="TAX %" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="5" Text="LINE TOTAL" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Column="6" Text="" />
+                        </Grid>
+
+                        <!-- Line items -->
+                        <VerticalStackLayout Grid.Row="2" BindableLayout.ItemsSource="{Binding LineItems}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SaleLineItem">
+                                    <Grid ColumnDefinitions="3*, 1*, 1.5*, 1.5*, 1*, 1.5*, Auto"
+                                          Padding="24,10">
+
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                            <Label Text="{Binding ProductName}"
+                                                   FontSize="13"
+                                                   FontFamily="OpenSansSemibold"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding ProductSku}"
+                                                   FontSize="11"
+                                                   TextColor="{StaticResource TextTertiary}" />
+                                        </VerticalStackLayout>
+
+                                        <!-- Quantity -->
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{StaticResource SurfacePrimary}"
+                                                Stroke="{StaticResource BorderDefault}"
+                                                StrokeThickness="1"
+                                                Padding="8,0"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                StrokeShape="RoundRectangle 4">
+                                            <Entry Text="{Binding Quantity}"
+                                                   Keyboard="Numeric"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   BackgroundColor="Transparent"
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="36"
+                                                   HorizontalOptions="Fill"
+                                                   TextChanged="OnQuantityChanged" />
+                                        </Border>
+
+                                        <!-- Unit Price -->
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="{StaticResource SurfacePrimary}"
+                                                Stroke="{StaticResource BorderDefault}"
+                                                StrokeThickness="1"
+                                                Padding="8,0"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                StrokeShape="RoundRectangle 4">
+                                            <Entry Text="{Binding UnitPrice}"
+                                                   Keyboard="Numeric"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   BackgroundColor="Transparent"
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="36"
+                                                   HorizontalOptions="Fill"
+                                                   TextChanged="OnUnitPriceChanged" />
+                                        </Border>
+
+                                        <!-- Discount -->
+                                        <Border Grid.Column="3"
+                                                BackgroundColor="{StaticResource SurfacePrimary}"
+                                                Stroke="{StaticResource BorderDefault}"
+                                                StrokeThickness="1"
+                                                Padding="8,0"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                StrokeShape="RoundRectangle 4">
+                                            <Entry Text="{Binding DiscountAmount}"
+                                                   Keyboard="Numeric"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   BackgroundColor="Transparent"
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="36"
+                                                   HorizontalOptions="Fill"
+                                                   TextChanged="OnDiscountChanged" />
+                                        </Border>
+
+                                        <!-- Tax Rate -->
+                                        <Border Grid.Column="4"
+                                                BackgroundColor="{StaticResource SurfacePrimary}"
+                                                Stroke="{StaticResource BorderDefault}"
+                                                StrokeThickness="1"
+                                                Padding="8,0"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                StrokeShape="RoundRectangle 4">
+                                            <Entry Text="{Binding TaxRate}"
+                                                   Keyboard="Numeric"
+                                                   FontSize="13"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   BackgroundColor="Transparent"
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="36"
+                                                   HorizontalOptions="Fill"
+                                                   TextChanged="OnTaxRateChanged" />
+                                        </Border>
+
+                                        <!-- Line Total -->
+                                        <Label Grid.Column="5"
+                                               Text="{Binding LineTotal, StringFormat='₹{0:N2}'}"
+                                               FontSize="13"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="End" />
+
+                                        <!-- Remove -->
+                                        <Button Grid.Column="6"
+                                                Text="✕"
+                                                FontSize="14"
+                                                BackgroundColor="Transparent"
+                                                TextColor="{StaticResource Danger}"
+                                                Padding="6"
+                                                Clicked="OnRemoveLineClicked"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <BoxView Grid.Row="3"
+                                 HeightRequest="1"
+                                 Color="{StaticResource BorderDefault}"
+                                 VerticalOptions="Start" />
+                    </Grid>
+                </controls:SmartCard>
+
+                <!-- Payment & Totals -->
+                <Grid ColumnDefinitions="1.5*, *" ColumnSpacing="16">
+
+                    <!-- Payment -->
+                    <controls:SmartCard Grid.Column="0" Padding="24">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="Payment"
+                                   FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}" />
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Method"
+                                       FontSize="12"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextSecondary}" />
+                                <Border Stroke="{StaticResource BorderDefault}"
+        StrokeThickness="1"
+        Padding="0"
+        HeightRequest="40"
+        VerticalOptions="Start"
+        StrokeShape="RoundRectangle 6">
+                                    <Picker ItemsSource="{Binding PaymentMethods}"
+            SelectedItem="{Binding PaymentMethod}"
+            Title=""
+            TextColor="{StaticResource TextPrimary}"
+            BackgroundColor="{StaticResource SurfacePrimary}"
+            FontSize="14"
+            HeightRequest="40"
+            VerticalOptions="Center"
+            HorizontalOptions="Fill"
+            Margin="12,0" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <controls:SmartTextBox x:Name="PaidAmountField"
+                                Label="Amount paid"
+                                Placeholder="0.00"
+                                Keyboard="Numeric" />
+                        </VerticalStackLayout>
+                    </controls:SmartCard>
+
+                    <!-- Totals -->
+                    <controls:SmartCard Grid.Column="1" Padding="24">
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="Totals"
+                                   FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}" />
+
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                                  RowSpacing="8">
+
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="Subtotal" FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       FontSize="13" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       Text="{Binding Subtotal, StringFormat='₹{0:N2}'}"
+                                       VerticalOptions="Center" HorizontalOptions="End" />
+
+                                <Label Grid.Row="1" Grid.Column="0"
+                                       Text="Discount" FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="1" Grid.Column="1"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Success}"
+                                       Text="{Binding TotalDiscount, StringFormat='- ₹{0:N2}'}"
+                                       VerticalOptions="Center" HorizontalOptions="End" />
+
+                                <Label Grid.Row="2" Grid.Column="0"
+                                       Text="Tax" FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="2" Grid.Column="1"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       Text="{Binding TotalTax, StringFormat='₹{0:N2}'}"
+                                       VerticalOptions="Center" HorizontalOptions="End" />
+
+                                <BoxView Grid.Row="3" Grid.ColumnSpan="2"
+                                         HeightRequest="1"
+                                         Color="{StaticResource BorderDefault}"
+                                         Margin="0,4" />
+
+                                <Label Grid.Row="4" Grid.Column="0"
+                                       Text="Grand Total" FontSize="15"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="4" Grid.Column="1"
+                                       FontSize="17" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource BrandPrimary}"
+                                       Text="{Binding GrandTotal, StringFormat='₹{0:N2}'}"
+                                       VerticalOptions="Center" HorizontalOptions="End" />
+
+                                <Label Grid.Row="5" Grid.Column="0"
+                                       Text="Due" FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="5" Grid.Column="1"
+                                       FontSize="14" FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource Danger}"
+                                       Text="{Binding DueAmount, StringFormat='₹{0:N2}'}"
+                                       VerticalOptions="Center" HorizontalOptions="End" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </controls:SmartCard>
+                </Grid>
+
+                <!-- Actions -->
+                <HorizontalStackLayout Spacing="12"
+                                       HorizontalOptions="End"
+                                       Margin="0,12,0,0">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                    <controls:SmartButton Text="Create Sale" Variant="Primary" Clicked="OnSaveClicked" />
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Product Picker Overlay -->
+        <views:ProductPickerView x:Name="ProductPicker" />
+
+    </Grid>
+
+</ContentView>

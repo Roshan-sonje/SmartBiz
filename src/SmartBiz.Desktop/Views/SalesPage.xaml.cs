@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartBiz.Desktop.Services;
 using SmartBiz.Desktop.ViewModels;
 using SmartBiz.Desktop.Views.Sales;
 
@@ -7,11 +8,13 @@ namespace SmartBiz.Desktop.Views;
 public partial class SalesPage : ContentView
 {
     private readonly SalesViewModel _vm;
+    private readonly IServiceProvider _services;
 
-    public SalesPage(SalesViewModel vm)
+    public SalesPage(SalesViewModel vm, IServiceProvider services)
     {
         InitializeComponent();
         _vm = vm;
+        _services = services;
     }
 
     protected override void OnParentSet()
@@ -27,11 +30,24 @@ public partial class SalesPage : ContentView
     {
         var list = new SalesListView(_vm);
 
-        list.NewSaleRequested += (_, _) =>
+        list.NewSaleRequested += async (_, _) =>
         {
-            // Placeholder — will be wired to Create Sale form in Phase 9C
-            Application.Current!.MainPage!.DisplayAlert("Coming Soon",
-                "Create Sale form is coming in Phase 9C.", "OK");
+            var createVm = _services.GetRequiredService<CreateSaleViewModel>();
+            var createView = new CreateSaleView(
+                createVm,
+                _services.GetRequiredService<IProductService>());
+
+            createView.Saved += async (_, invoice) =>
+            {
+                await _vm.LoadAsync();
+                ShowList();
+                await Application.Current!.MainPage!.DisplayAlert("Success",
+                    $"Sale {invoice} created successfully.", "OK");
+            };
+            createView.Cancelled += (_, _) => ShowList();
+
+            ContentHost.Content = createView;
+            await createView.InitializeAsync();
         };
 
         ContentHost.Content = list;

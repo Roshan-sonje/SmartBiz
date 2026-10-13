@@ -88,6 +88,8 @@ public static class MauiProgram
         builder.Services.AddTransient<SalesViewModel>();
         builder.Services.AddTransient<SalesPage>();
 
+        builder.Services.AddTransient<CreateSaleViewModel>();
+
 
 
 

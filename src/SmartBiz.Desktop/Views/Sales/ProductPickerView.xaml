@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+             xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+             x:Class="SmartBiz.Desktop.Views.Sales.ProductPickerView"
+             x:DataType="vm:CreateSaleViewModel"
+             IsVisible="False"
+             BackgroundColor="#80000000">
+
+    <Grid>
+        <controls:SmartCard Padding="0"
+                            WidthRequest="700"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            MaximumHeightRequest="600">
+
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                <!-- Header -->
+                <Grid Grid.Row="0" Padding="24,20,24,16">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Pick a Product"
+                               FontSize="20"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="Search and select a product to add to the sale"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource BorderDefault}"
+                         VerticalOptions="End" />
+
+                <!-- Search -->
+                <Grid Grid.Row="1" Padding="24,16">
+                    <Border BackgroundColor="{StaticResource SurfacePrimary}"
+                            Stroke="{StaticResource BorderDefault}"
+                            StrokeThickness="1"
+                            Padding="12,0"
+                            HeightRequest="40"
+                            StrokeShape="RoundRectangle 6">
+                        <Entry x:Name="SearchEntry"
+                               Placeholder="Search by name or SKU..."
+                               TextChanged="OnSearchTextChanged"
+                               BackgroundColor="Transparent"
+                               TextColor="{StaticResource TextPrimary}"
+                               PlaceholderColor="{StaticResource TextTertiary}"
+                               FontSize="14" />
+                    </Border>
+                </Grid>
+
+                <!-- Product List -->
+                <CollectionView x:Name="ProductList" Grid.Row="2"
+                                SelectionMode="Single"
+                                SelectionChanged="OnProductSelected"
+                                Margin="0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="3*, 2*, 1.5*, 1.5*" Padding="24,12">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="{Binding Name}" FontSize="14" FontFamily="OpenSansSemibold"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                    <Label Text="{Binding Sku}" FontSize="11"
+                                           TextColor="{StaticResource TextTertiary}" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="{Binding CategoryName}" FontSize="12"
+                                       TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="{Binding StockText}" FontSize="12"
+                                       TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                <Label Grid.Column="3" Text="{Binding PriceText}" FontSize="13"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource BrandPrimary}" VerticalOptions="Center"
+                                       HorizontalOptions="End" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <Label Text="No products match your search"
+                               FontSize="13"
+                               TextColor="{StaticResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               Padding="40" />
+                    </CollectionView.EmptyView>
+                </CollectionView>
+
+                <BoxView Grid.Row="2" HeightRequest="1" Color="{StaticResource BorderDefault}"
+                         VerticalOptions="End" />
+
+                <!-- Footer -->
+                <HorizontalStackLayout Grid.Row="3" Padding="24,16" HorizontalOptions="End">
+                    <controls:SmartButton Text="Cancel" Variant="Secondary" Clicked="OnCancelClicked" />
+                </HorizontalStackLayout>
+
+            </Grid>
+        </controls:SmartCard>
+    </Grid>
+
+</ContentView>
