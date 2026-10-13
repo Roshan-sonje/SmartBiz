@@ -90,7 +90,7 @@ public static class MauiProgram
 
         builder.Services.AddTransient<CreateSaleViewModel>();
 
-
+        builder.Services.AddTransient<SaleDetailsViewModel>();
 
 
 #if DEBUG

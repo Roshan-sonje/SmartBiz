@@ -72,6 +72,9 @@
                         <DataTemplate x:DataType="vm:SaleRow">
                             <Grid ColumnDefinitions="2*, 1.5*, 2*, 1.5*, 1.5*, 1.5*, 1.2*"
                                   Padding="24,14">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRowTapped" />
+                                </Grid.GestureRecognizers>
                                 <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
                                     <Label Text="{Binding InvoiceNumber}"
                                            FontSize="13"

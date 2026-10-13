@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SmartBiz.Desktop.Controls"
+             xmlns:vm="clr-namespace:SmartBiz.Desktop.ViewModels"
+             x:Class="SmartBiz.Desktop.Views.Sales.SaleDetailsView"
+             x:DataType="vm:SaleDetailsViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" MaximumWidthRequest="1200">
+
+            <!-- Header with Back -->
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <controls:SmartButton Grid.Column="0"
+                                      Text="← Back to Sales"
+                                      Variant="Ghost"
+                                      Clicked="OnBackClicked" />
+                <Label Grid.Column="2"
+                       Text="{Binding Sale.InvoiceNumber}"
+                       FontSize="20"
+                       FontFamily="OpenSansSemibold"
+                       TextColor="{StaticResource TextPrimary}"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Error -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   FontSize="13"
+                   IsVisible="{Binding HasError}" />
+
+            <Grid ColumnDefinitions="1.5*, *" ColumnSpacing="16">
+
+                <!-- Customer & Meta -->
+                <controls:SmartCard Grid.Column="0" Padding="24">
+                    <VerticalStackLayout Spacing="16">
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Customer"
+                                   FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <controls:SmartBadge Grid.Column="1"
+                                                 Text="{Binding Sale.PaymentStatus}"
+                                                 Variant="Success" />
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding Sale.CustomerName, FallbackValue='Walk-in Customer'}"
+                                   FontSize="18"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="{Binding Sale.CustomerPhone}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   IsVisible="{Binding Sale.CustomerPhone, Converter={x:Null}}" />
+                        </VerticalStackLayout>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderDefault}" />
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Invoice Date"
+                                   FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding InvoiceDateText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Text="Status"
+                                   FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding Sale.Status}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Text="Created By"
+                                   FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding Sale.CreatedByUserName}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="End" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderDefault}"
+                                 IsVisible="{Binding Sale.Notes, Converter={x:Null}}" />
+
+                        <VerticalStackLayout Spacing="4"
+                                             IsVisible="{Binding Sale.Notes, Converter={x:Null}}">
+                            <Label Text="Notes"
+                                   FontSize="12"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding Sale.Notes}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+
+                <!-- Totals Summary -->
+                <controls:SmartCard Grid.Column="1" Padding="24">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Summary"
+                               FontSize="15"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                              RowSpacing="8">
+
+                            <Label Grid.Row="0" Grid.Column="0" Text="Subtotal" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding SubtotalText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Text="Discount" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding DiscountText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource Success}"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Text="Tax" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding TaxText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="3" Grid.Column="0" Text="Round Off" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="3" Grid.Column="1"
+                                   Text="{Binding RoundOffText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="End" />
+
+                            <BoxView Grid.Row="4" Grid.ColumnSpan="2"
+                                     HeightRequest="1"
+                                     Color="{StaticResource BorderDefault}"
+                                     Margin="0,4" />
+
+                            <Label Grid.Row="5" Grid.Column="0" Text="Grand Total" FontSize="15"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Grid.Row="5" Grid.Column="1"
+                                   Text="{Binding GrandTotalText}"
+                                   FontSize="17"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource BrandPrimary}"
+                                   HorizontalOptions="End" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Paid" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding PaidText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource Success}"
+                                   FontFamily="OpenSansSemibold"
+                                   HorizontalOptions="End" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Text="Due" FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding DueText}"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Danger}"
+                                   FontFamily="OpenSansSemibold"
+                                   HorizontalOptions="End" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </controls:SmartCard>
+            </Grid>
+
+            <!-- Line Items -->
+            <controls:SmartCard Padding="0">
+                <Grid RowDefinitions="Auto,Auto,*">
+
+                    <Grid Grid.Row="0" Padding="24,16">
+                        <Label Text="Items"
+                               FontSize="15"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="{StaticResource TextPrimary}" />
+                    </Grid>
+
+                    <BoxView Grid.Row="0" HeightRequest="1" Color="{StaticResource BorderDefault}"
+                             VerticalOptions="End" />
+
+                    <Grid Grid.Row="1"
+                          ColumnDefinitions="3*, 1*, 1.5*, 1.5*, 1*, 1.5*"
+                          Padding="24,12"
+                          BackgroundColor="{StaticResource BackgroundSecondary}">
+                        <Label Grid.Column="0" Text="PRODUCT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="1" Text="QTY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="2" Text="PRICE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="3" Text="DISCOUNT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="4" Text="TAX %" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                        <Label Grid.Column="5" Text="LINE TOTAL" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
+
+                    <VerticalStackLayout Grid.Row="2" BindableLayout.ItemsSource="{Binding Sale.Items}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="3*, 1*, 1.5*, 1.5*, 1*, 1.5*" Padding="24,12">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="{Binding ProductName}" FontSize="13"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{StaticResource TextPrimary}" />
+                                        <Label Text="{Binding ProductSku}" FontSize="11"
+                                               TextColor="{StaticResource TextTertiary}" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding Quantity, StringFormat='{0:0.##}'}"
+                                           FontSize="13" TextColor="{StaticResource TextPrimary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding UnitPrice, StringFormat='₹{0:N2}'}"
+                                           FontSize="13" TextColor="{StaticResource TextPrimary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="3" Text="{Binding DiscountAmount, StringFormat='₹{0:N2}'}"
+                                           FontSize="13" TextColor="{StaticResource TextSecondary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="4" Text="{Binding TaxRate, StringFormat='{0:0.##}%'}"
+                                           FontSize="13" TextColor="{StaticResource TextSecondary}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="5" Text="{Binding LineTotal, StringFormat='₹{0:N2}'}"
+                                           FontSize="13" FontFamily="OpenSansSemibold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </Grid>
+            </controls:SmartCard>
+
+            <!-- Actions -->
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                <controls:SmartButton Text="Cancel Sale"
+                                      Variant="Danger"
+                                      Clicked="OnCancelSaleClicked"
+                                      IsVisible="{Binding CanCancel}" />
+                <controls:SmartButton Text="Close"
+                                      Variant="Secondary"
+                                      Clicked="OnBackClicked" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentView>

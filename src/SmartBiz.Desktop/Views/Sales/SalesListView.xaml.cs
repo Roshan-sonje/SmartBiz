@@ -8,6 +8,7 @@ public partial class SalesListView : ContentView
     private bool _loaded;
 
     public event EventHandler? NewSaleRequested;
+    public event EventHandler<SaleRow>? RowTapped;
 
     public SalesListView(SalesViewModel vm)
     {
@@ -29,5 +30,13 @@ public partial class SalesListView : ContentView
     private void OnNewSaleClicked(object? sender, EventArgs e)
     {
         NewSaleRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnRowTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is Grid grid && grid.BindingContext is SaleRow row)
+        {
+            RowTapped?.Invoke(this, row);
+        }
     }
 }
